@@ -10,6 +10,8 @@ import csv
 from roster import print_me_daddy as pmd
 from roster import add_to_roster as atr
 from roster import remove_from_roster as rfr
+from roster import get_armory_link as gal
+
 
 client = discord.Client()
 
@@ -33,6 +35,8 @@ async def on_message(message): # placeholder "bookmarks"
         await atr(client, message)
     elif message.content.startswith('!roster remove'):
         await rfr(client, message)
+    elif message.content.startswith('!armory'):
+        await gal(client, message)
 
 client.accept_invite('https://discord.gg/mM5fXCe')
 

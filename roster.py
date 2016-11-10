@@ -6,7 +6,7 @@ async def print_me_daddy(client, message):
     roster_string = get_roster_string()
     roster_size = get_roster_size()
 
-    await client.send_message(message.channel, ":banana: Roster for Suboptimal (" + str(roster_size) + " members total) :banana:")
+    await client.send_message(message.channel, ":banana: Roster for Suboptimal *(" + str(roster_size) + " members total)* :banana:")
     await client.send_message(message.channel, roster_string)
 
 async def add_to_roster(client, message):
@@ -14,10 +14,10 @@ async def add_to_roster(client, message):
     s = message.content.split()
 
     with open('roster.csv', 'a') as csvfile:
-        writer = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        writer = csv.writer(csvfile, delimiter=',', quotechar='|', quoting = csv.QUOTE_MINIMAL)
         writer.writerow([s[2], s[3], s[4], s[5], s[6]])
 
-    await client.send_message(message.channel, ":banana: Added " + s[2] + " to roster! :monkey_face: :banana:")
+    await client.send_message(message.channel, ":banana: Added **" + s[2] + "** to roster! :monkey_face: :banana:")
 
     new_roster_string = get_roster_string()
     await client.send_message(message.channel, new_roster_string)
@@ -38,10 +38,28 @@ async def remove_from_roster(client,message):
         for row in csv.reader(in_file):
             writer.writerow(row)
 
-    await client.send_message(message.channel, ":banana: Removed " + s[2] + " from roster! :cry: :banana:")
+    await client.send_message(message.channel, ":banana: Removed **" + s[2] + "** from roster! :cry: :banana:")
 
     new_roster_string = get_roster_string()
     await client.send_message(message.channel, new_roster_string)
+
+async def get_armory_link(client, message):
+    # format: !armory <name>
+    s = message.content.split()
+    person_is_on_roster = False
+    link = "http://us.battle.net/wow/en/character/emerald-dream/" + s[1] + "/advanced"
+
+    with open('roster.csv', 'r') as in_file:
+        for row in csv.reader(in_file):
+            if row[0] == s[1]:
+                person_is_on_roster = True
+                break
+
+    # first, verify that the requested person is actually on the roster
+    if person_is_on_roster:
+        await client.send_message(message.channel, ":banana: Armory link for **" + str(s[1]) + "**: " + link + " :banana:")
+    else:
+        await client.send_message(message.channel, ":banana: I was unable to find **" + str(s[1]) + "** on the guild roster. :banana:")
 
 
 def get_roster_size():
