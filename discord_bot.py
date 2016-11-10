@@ -19,7 +19,7 @@ async def on_ready():
 async def on_message(message):
     if message.content.startswith('!test'):
         await client.send_message(message.channel, 'I\'m a fuckboy.')
-    elif message.content.startswith('!fuckpeter'):
+    elif message.content.startswith('!x'):
         await pmd(client, message)
 
 client.accept_invite('https://discord.gg/mM5fXCe')
