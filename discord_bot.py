@@ -1,36 +1,10 @@
 #!/usr/bin/python
-'''
-import discord
-import asyncio
-
-# Disables the SSL warning that is printed to the console.
-import requests.packages.urllib3
-requests.packages.urllib3.disable_warnings()
-
-def example_func(author, message):
-    client.send_message(message.channel, "%s, How are you doing?" % author)
-
-#@client.event
-def on_message(message):
-    author = message.author
-
-    if message.content.startwith('!test'):
-        example_func(author, message)
-
-
-
-password = 'MjQzMTIzNjEyNTMyMzQyNzg5.CwWINA.Asi_1i6v3MUvBQfiqg4tFD0tnWs'
-ID = 'starter-pot#3689'
-
-client.login(ID, password)
-
-client.accept_invite('https://discord.gg/b9T4n')
-
-client.run()
-'''
 
 import discord
 import asyncio
+import csv
+
+from roster import pmd
 
 client = discord.Client()
 
@@ -44,16 +18,9 @@ async def on_ready():
 @client.event
 async def on_message(message):
     if message.content.startswith('!test'):
-        counter = 0
-        tmp = await client.send_message(message.channel, 'I\'m a fuckboy.\n Calculating messages...')
-        async for log in client.logs_from(message.channel, limit=100):
-            if log.author == message.author:
-                counter += 1
-
-        await client.edit_message(tmp, 'You have {} messages.'.format(counter))
-    elif message.content.startswith('!sleep'):
-        await asyncio.sleep(5)
-        await client.send_message(message.channel, 'Done sleeping')
+        await client.send_message(message.channel, 'I\'m a fuckboy.')
+    elif message.content.startswith('!fuckpeter'):
+        await pmd(client, message)
 
 client.accept_invite('https://discord.gg/mM5fXCe')
 
