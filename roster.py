@@ -24,13 +24,13 @@ async def pmd(client, message):
             else:
                 print("Help")
 
-        m =  "```" #"`{:12s} {:12s} {:12s} {:7s}`\n".format("Name", "Class", "Spec", "Rank   ")
+        m =  "```"
 
         m += "# # # # # # # # # # # # TANKS # # # # # # # # # # # #\n"
         m += "-----------------------------------------------------\n"
 
         for player in tanks:
-            m += "{:12s}   {:12s}   {:12s}   {:7s}\n".format(player['Name'], player['Class'], player['Spec'], player['Rank'])
+            m += "{:12s}   {:12s}   {:13s}   {:7s}\n".format(player['Name'], player['Class'], player['Spec'], player['Rank'])
 
         m += "\n"
 
@@ -39,7 +39,7 @@ async def pmd(client, message):
 
         for player in melee:
             #print "%s" % player['Name']
-            m += "{:12s}   {:12s}   {:12s}   {:7s}\n".format(player['Name'], player['Class'], player['Spec'], player['Rank'])
+            m += "{:12s}   {:12s}   {:13s}   {:7s}\n".format(player['Name'], player['Class'], player['Spec'], player['Rank'])
             #await client.send_message(message.channel, "%s %s %s %s" % (player['Name'], player['Class'], player['Spec'], player['Rank']))
 
         m += "\n"
@@ -49,7 +49,7 @@ async def pmd(client, message):
 
         for player in ranged:
             #print "%s" % player['Name']
-            m += "{:12s}   {:12s}   {:12s}   {:7s}\n".format(player['Name'], player['Class'], player['Spec'], player['Rank'])
+            m += "{:12s}   {:12s}   {:13s}   {:7s}\n".format(player['Name'], player['Class'], player['Spec'], player['Rank'])
             #await client.send_message(message.channel, "%s %s %s %s" % (player['Name'], player['Class'], player['Spec'], player['Rank']))
 
         m += "\n"
@@ -59,7 +59,7 @@ async def pmd(client, message):
 
         for player in healers:
             #print "%s" % player['Name']
-            m += "{:12s}   {:12s}   {:12s}   {:7s}\n".format(player['Name'], player['Class'], player['Spec'], player['Rank'])
+            m += "{:12s}   {:12s}   {:13s}   {:7s}\n".format(player['Name'], player['Class'], player['Spec'], player['Rank'])
             #await client.send_message(message.channel, "%s %s %s %s" % (player['Name'], player['Class'], player['Spec'], player['Rank']))
 
         m += "```"
