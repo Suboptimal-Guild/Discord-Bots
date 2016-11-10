@@ -2,6 +2,8 @@ import discord
 import asyncio
 import csv
 
+#TODO: modularize code more and split into multiple files, im exhausted as fuck so just cramming it in here for now, it works though
+
 async def print_me_daddy(client, message):
     roster_string = get_roster_string()
     roster_size = get_roster_size()
@@ -59,7 +61,31 @@ async def get_armory_link(client, message):
     if person_is_on_roster:
         await client.send_message(message.channel, ":banana: Armory link for **" + str(s[1]) + "**: " + link + " :banana:")
     else:
-        await client.send_message(message.channel, ":banana: I was unable to find **" + str(s[1]) + "** on the guild roster. :banana:")
+        await client.send_message(message.channel, ":banana: I was unable to find **" + str(s[1]) + "** on the guild roster. Would you like me to add them? :banana:")
+
+        #TODO: need to figure out multiple checks, since currently even if i say no it has to wait until the timeout to keep checking for yes. Hmm...
+        def add_check(msg):
+            return msg.content == "yes"
+
+        #msg = await client.wait_for_message(author=message.author, content='no')
+        msg = await client.wait_for_message(timeout=10, author=message.author, check=add_check)
+
+        if msg is None:
+            await client.send_message(message.channel, ":banana: Ok, **" + str(s[1]) + "** was not added. :banana:")
+        elif msg.content == "yes":
+            await client.send_message(message.channel, ":banana: Ok, please type the letter for their role followed by their class, spec, and rank, all separated by spaces. :banana:")
+
+            def check(msg):
+                return len(msg.content.split()) == 4
+
+            msg2 = await client.wait_for_message(timeout=15, author=message.author, check=check)
+
+            if msg2 is None:
+                 await client.send_message(message.channel, ":banana: Sorry, I was unable to add **" + s[1] +"** to the roster. :banana:")
+            else:
+                msg2.content = "!roster add " + str(s[1]) + " " + msg2.content
+                await add_to_roster(client, msg2)
+                await client.send_message(message.channel, ":banana: Armory link for **" + str(s[1]) + "**: " + link + " :banana:")
 
 
 def get_roster_size():
