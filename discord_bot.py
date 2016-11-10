@@ -4,7 +4,12 @@ import discord
 import asyncio
 import csv
 
-from roster import pmd
+
+#TODO: ensure proper controls when calling commands, i.e. only certain ranks can invoke certain commands
+
+from roster import print_me_daddy as pmd
+from roster import add_to_roster as atr
+from roster import remove_from_roster as rfr
 
 client = discord.Client()
 
@@ -16,11 +21,18 @@ async def on_ready():
     print('------')
 
 @client.event
-async def on_message(message):
+async def on_message(message): # placeholder "bookmarks"
+    ### COMMANDS INVOKABLE BY EVERYONE ###
+
+    ### COMMANDS INVOKABLE BY OFFICERS ###
     if message.content.startswith('!test'):
         await client.send_message(message.channel, 'I\'m a fuckboy.')
-    elif message.content.startswith('!x'):
+    elif message.content.startswith('!roster status'):
         await pmd(client, message)
+    elif message.content.startswith('!roster add'):
+        await atr(client, message)
+    elif message.content.startswith('!roster remove'):
+        await rfr(client, message)
 
 client.accept_invite('https://discord.gg/mM5fXCe')
 
