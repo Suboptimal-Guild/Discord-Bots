@@ -4,6 +4,17 @@ import csv
 
 #TODO: modularize code more and split into multiple files, im exhausted as fuck so just cramming it in here for now, it works though
 
+# for some reason, there is a massive stink with this??? i think maybe python 2.7 vs 3.5 conflict... ill keep working in the google_sheets_interface file to get functionality down before linking it up
+from sheets import get_main_character_name as gmcn
+
+asycn def showhelp(client, message):
+    # prints out all commands that Harambot currently knows
+    str = "Hello there. Currently I know the following commands:\n"
+
+
+    await client.send_message(message.channel, str)
+
+
 async def print_me_daddy(client, message):
     roster_string = get_roster_string()
     roster_size = get_roster_size()
@@ -87,6 +98,51 @@ async def get_armory_link(client, message):
                 await add_to_roster(client, msg2)
                 await client.send_message(message.channel, ":banana: Armory link for **" + str(s[1]) + "**: " + link + " :banana:")
 
+async def get_char_name(client, message):
+    msg = message.content.split()
+
+    name = msg[1]
+
+    isNameFound = False
+
+    nickname = ""
+    roles = ""
+
+    for member in message.server.members:
+        if name == member.name:
+            isNameFound = True
+            if member.nick is not None:
+                nickname = member.nick
+            roles = member.roles
+            break
+
+    str = "Discord User name: " + name + "\nNickname on server " + message.server.name + ": " + nickname + "\nRoles: "
+    for role in roles:
+        str += (role.name + ", ")
+    str = str[:-2]
+
+    await client.send_message(message.channel, str)
+
+
+async def get_own_name(client, message):
+    str = "Discord User name: " + message.author.name + "\nNickname on server " + message.server.name + ": " + message.author.nick + "\nRoles: "
+    for role in message.author.roles:
+        str += (role.name + ", ")
+    str = str[:-2]
+
+    await client.send_message(message.channel, str)
+
+async def get_character(client, message):
+    msg = message.content.split()
+    # usage: !char <discord_name>
+    #str = "Main Character Name: " + gmcn(msg[1]) + "\n"
+    #str = str + "Class: " + + "\n"
+    #str = str + "Role: " +
+
+    str = gmcn(msg[1])
+
+    await client.send_message(message.channel, str)
+
 
 def get_roster_size():
     with open('roster.csv', newline='') as csvfile:
@@ -101,7 +157,6 @@ def get_roster_string():
 
         tanks = []
         healers = []
-
         melee = []
         ranged = []
 
