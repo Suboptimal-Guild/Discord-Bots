@@ -36,6 +36,8 @@ async def on_message(message): # placeholder "bookmarks"
     ### check is
     ### if <desired role> in message.author.roles
 
+    # also we want to post messages in the channe lwhere the user asked, but if possible make the message only viewable to them kinda like the default bot can do
+
     ### COMMANDS INVOKABLE BY OFFICERS ###
     if message.content.startswith('!test'):
         await client.send_message(message.channel, 'I\'m a fuckboy.')
