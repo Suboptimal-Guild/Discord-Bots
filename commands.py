@@ -141,7 +141,23 @@ async def get_character(client, message):
 
     str = gmcn(msg[1])
 
-    await client.send_message(message.channel, str)
+    #str.rstrip('(').rstrip('\'').split(',')
+
+    title = msg[1]
+
+    if msg[1][-1:] == 's':
+        title += "' Characters"
+    else:
+        title += "'s Characters"
+
+    output = "```\n"
+    output += title.center(40, '-')
+    output += "\n"
+    for x in str:
+        output += "{:12s}   {:12s}   {:10s}\n".format(x[1], x[2], x[3])
+    output += "```"
+
+    await client.send_message(message.channel, output)
 
 
 def get_roster_size():

@@ -15,7 +15,7 @@ except ImportError:
 
 # If modifying these scopes, delete your previously saved credentials
 # at ~/.credentials/sheets.googleapis.com-python-quickstart.json
-SCOPES = 'https://www.googleapis.com/auth/spreadsheets.readonly'
+SCOPES = 'https://www.googleapis.com/auth/spreadsheets'
 CLIENT_SECRET_FILE = 'client_secret.json'
 APPLICATION_NAME = 'Google Sheets API Python Quickstart'
 
@@ -66,16 +66,18 @@ def get_main_character_name(discord_name):
         print('No data found.')
     else:
         #print('Discord Name, Main Character Name:')
+        a = []
         for row in values:
             # Print columns A and E, which correspond to indices 0 and 4.
             if row[0] == discord_name:
                 print('Name is ' + row[1] + '!')
-                return row[1], row[2], row[3]
+                a.append(row)
             #print('%s, %s' % (row[0], row[1]))
+        return a
         print('Discord name not found!')
         return -1
 
-def add_character(name, classname, role):
+def add_character(discordname, charname, classname, role):
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
     discoveryUrl = ('https://sheets.googleapis.com/$discovery/rest?'
@@ -84,16 +86,14 @@ def add_character(name, classname, role):
                               discoveryServiceUrl=discoveryUrl)
 
     spreadsheetId = '1K0V19lxMsIC7TzLTJ8AY8s7vjlIljpmK_5MuO2LopSI' # Harambot Test spreadsheet
-    rangeName = 'A1:A'
-    values = {'values':[['Hello Saturn',],]}
+    rangeName = 'A1:D' # We're adding a line of 4 cells.
+    # Append Discord Name, Character Name, Class, and Role
+    values = {'values':[[discordname, charname, classname, role],]}
+    # Execute dat shieet
     result = service.spreadsheets().values().append(
         spreadsheetId=spreadsheetId, range=rangeName,
         valueInputOption='RAW',
         body=values).execute()
-    #values = result.get('values', [])
-
-    #if not values:
-    #    print('Data failed to add.')
 
 
 def main():
@@ -131,4 +131,4 @@ def main():
 if __name__ == '__main__':
     #main()
     #get_main_character_name('Mortivius (Peter)')
-    add_character('Valorok', 'Warrior', 'Tank')
+    add_character('Steve', 'Valorok', 'Warrior', 'Tank')
