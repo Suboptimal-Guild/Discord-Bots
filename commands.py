@@ -7,10 +7,10 @@ import csv
 # for some reason, there is a massive stink with this??? i think maybe python 2.7 vs 3.5 conflict... ill keep working in the google_sheets_interface file to get functionality down before linking it up
 from sheets import get_main_character_name as gmcn
 
-asycn def showhelp(client, message):
+async def showhelp(client, message):
     # prints out all commands that Harambot currently knows
-    str = "Hello there. Currently I know the following commands:\n"
-
+    str = "Hello there. Currently I know the following commands:\n\n"
+    str += "`!armory <character_name>` generates an armory link for the given character."
 
     await client.send_message(message.channel, str)
 
