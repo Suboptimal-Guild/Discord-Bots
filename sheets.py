@@ -77,6 +77,24 @@ def get_main_character_name(discord_name):
         print('Discord name not found!')
         return -1
 
+def get_roster():
+    credentials = get_credentials()
+    http = credentials.authorize(httplib2.Http())
+    discoveryUrl = ('https://sheets.googleapis.com/$discovery/rest?'
+                    'version=v4')
+    service = discovery.build('sheets', 'v4', http=http,
+                              discoveryServiceUrl=discoveryUrl)
+
+    spreadsheetId = '1j5kBuTppGMIp17NBvLPmHV7b2_GSuc2JRT9JhKxLDas' # Harambot Test spreadsheet
+    rangeName = 'B21:C' # We're adding a line of 4 cells.
+    # Append Discord Name, Character Name, Class, and Role
+    values = {'values':[["Test", "Test"],]}
+    # Execute dat shieet
+    result = service.spreadsheets().values().append(
+        spreadsheetId=spreadsheetId, range=rangeName,
+        valueInputOption='RAW', insertDataOption='INSERT_ROWS',
+        body=values).execute()
+
 def add_character(discordname, charname, classname, role):
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
@@ -131,4 +149,5 @@ def main():
 if __name__ == '__main__':
     #main()
     #get_main_character_name('Mortivius (Peter)')
-    add_character('Steve', 'Valorok', 'Warrior', 'Tank')
+    #add_character('Steve', 'Valorok', 'Warrior', 'Tank')
+    get_roster()

@@ -1,3 +1,5 @@
+from texttable import Texttable
+
 import discord
 import asyncio
 import csv
@@ -7,10 +9,40 @@ import csv
 # for some reason, there is a massive stink with this??? i think maybe python 2.7 vs 3.5 conflict... ill keep working in the google_sheets_interface file to get functionality down before linking it up
 from sheets import get_main_character_name as gmcn
 
+VALID_KEYWORDS = {"Death Knight": ["Blood", "Frost", "Unholy"],
+               "Demon Hunter": ["Havoc", "Vengeance"],
+               "Druid": ["Balance", "Feral", "Guardian", "Restoration"],
+               "Hunter": ["Beast Mastery", "Marksmanship", "Survival"],
+               "Mage": ["Arcane", "Fire", "Frost"],
+               "Monk": ["Brewmaster", "Mistweaver", "Windwalker"],
+               "Paladin": ["Holy", "Protection", "Retribution"],
+               "Priest": ["Discipline", "Holy", "Shadow"],
+               "Rogue": ["Assassination", "Outlaw", "Subtlety"],
+               "Shaman": ["Elemental", "Enhancement", "Restoration"],
+               "Warlock": ["Affliction", "Demonology", "Destruction"],
+               "Warrior": ["Arms", "Fury", "Protection"]}
+
+VALID_RANKS = ["Trial", "Raider", "Officer", "GM"]
+
 async def showhelp(client, message):
     # prints out all commands that Harambot currently knows
-    str = "Hello there. Currently I know the following commands:\n\n"
-    str += "`!armory <character_name>` generates an armory link for the given character."
+    str = ":banana: :monkey_face: OOH OOH AAH AAH :monkey_face: :banana:. Currently I know the following commands:\n\n"
+
+    t = Texttable()
+
+    t.add_rows([["Command", "Description"],
+                ["!armory <character_name>", "Generates an armory link for the given character."],
+                ["!chars <discord_name>", "Generates a list of the discord user's World of Warcraft characters."],
+                ["!roster add <character_name>", "Add's a character to the raid roster."],
+                ["!roster remove <character_name>", "Removes a character from the raid roster."],
+                ["!roster status <character_name>", "Prints out a quick summary of who will be absent on what days."],
+                ["!whoami", "Prints out your Discord Name, Server Nickname, and Roles."],
+                ["!whois <discord_name>", "Prints out the Discord Name, Server Nickname, and Roles of a user."]
+                ])
+
+    str += "```"
+    str += t.draw()
+    str += "```"
 
     await client.send_message(message.channel, str)
 
@@ -28,7 +60,11 @@ async def add_to_roster(client, message):
 
     with open('roster.csv', 'a') as csvfile:
         writer = csv.writer(csvfile, delimiter=',', quotechar='|', quoting = csv.QUOTE_MINIMAL)
-        writer.writerow([s[2], s[3], s[4], s[5], s[6]])
+        if (len(s) == 7):
+            writer.writerow([s[2], s[3], s[4], s[5], s[6]])
+        elif len(s) == 8:
+            writer.writerow([s[2], s[3], (s[4] + " " + s[5]), s[6], s[7]])
+
 
     await client.send_message(message.channel, ":banana: Added **" + s[2] + "** to roster! :monkey_face: :banana:")
 
@@ -87,7 +123,12 @@ async def get_armory_link(client, message):
             await client.send_message(message.channel, ":banana: Ok, please type the letter for their role followed by their class, spec, and rank, all separated by spaces. :banana:")
 
             def check(msg):
-                return len(msg.content.split()) == 4
+                valid_roles = ["T", "M", "R", "H"]
+                a = msg.content.split()
+
+                bool_one = (len(a) == 4 and a[0] in valid_roles and a[1] in VALID_KEYWORDS and a[2] in VALID_KEYWORDS[a[1]] and a[3] in VALID_RANKS)
+                bool_two = (len(a) == 5 and a[0] in valid_roles and (a[1] + " " + a[2]) in VALID_KEYWORDS and a[3] in VALID_KEYWORDS[(a[1] + " " + a[2])] and a[4] in VALID_RANKS)
+                return bool_one or bool_two
 
             msg2 = await client.wait_for_message(timeout=15, author=message.author, check=check)
 
@@ -135,28 +176,29 @@ async def get_own_name(client, message):
 async def get_character(client, message):
     msg = message.content.split()
     # usage: !char <discord_name>
-    #str = "Main Character Name: " + gmcn(msg[1]) + "\n"
-    #str = str + "Class: " + + "\n"
-    #str = str + "Role: " +
 
     str = gmcn(msg[1])
-
-    #str.rstrip('(').rstrip('\'').split(',')
-
     title = msg[1]
 
+    # If the person's name ends with s (ex: Stannis), just add an apostrophe to
+    # the end. (ex: Stannis')
     if msg[1][-1:] == 's':
         title += "' Characters"
+    # Otherwise use "'s".
     else:
         title += "'s Characters"
 
+    # Use a code block to format it.
     output = "```\n"
+    # Center the title.
     output += title.center(40, '-')
     output += "\n"
+    # Output all of the characters found. Space them appropriately.
     for x in str:
         output += "{:12s}   {:12s}   {:10s}\n".format(x[1], x[2], x[3])
     output += "```"
 
+    # Output the message.
     await client.send_message(message.channel, output)
 
 
@@ -189,7 +231,6 @@ def get_roster_string():
                 print("Help")
 
         m =  "```"
-
         m += "# # # # # # # # # # # # TANKS # # # # # # # # # # # #\n"
         m += "-----------------------------------------------------\n"
 
@@ -197,34 +238,25 @@ def get_roster_string():
             m += "{:12s}   {:12s}   {:13s}   {:7s}\n".format(player['Name'], player['Class'], player['Spec'], player['Rank'])
 
         m += "\n"
-
         m += "# # # # # # # # # # # # MELEE # # # # # # # # # # # #\n"
         m += "-----------------------------------------------------\n"
 
         for player in melee:
-            #print "%s" % player['Name']
             m += "{:12s}   {:12s}   {:13s}   {:7s}\n".format(player['Name'], player['Class'], player['Spec'], player['Rank'])
-            #await client.send_message(message.channel, "%s %s %s %s" % (player['Name'], player['Class'], player['Spec'], player['Rank']))
 
         m += "\n"
-
         m += "# # # # # # # # # # # # RANGE # # # # # # # # # # # #\n"
         m += "-----------------------------------------------------\n"
 
         for player in ranged:
-            #print "%s" % player['Name']
             m += "{:12s}   {:12s}   {:13s}   {:7s}\n".format(player['Name'], player['Class'], player['Spec'], player['Rank'])
-            #await client.send_message(message.channel, "%s %s %s %s" % (player['Name'], player['Class'], player['Spec'], player['Rank']))
 
         m += "\n"
-
         m += "# # # # # # # # # # # # HEALS # # # # # # # # # # # #\n"
         m += "-----------------------------------------------------\n"
 
         for player in healers:
-            #print "%s" % player['Name']
             m += "{:12s}   {:12s}   {:13s}   {:7s}\n".format(player['Name'], player['Class'], player['Spec'], player['Rank'])
-            #await client.send_message(message.channel, "%s %s %s %s" % (player['Name'], player['Class'], player['Spec'], player['Rank']))
 
         m += "```"
 
