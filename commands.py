@@ -8,6 +8,7 @@ import csv
 
 # for some reason, there is a massive stink with this??? i think maybe python 2.7 vs 3.5 conflict... ill keep working in the google_sheets_interface file to get functionality down before linking it up
 from sheets import get_main_character_name as gmcn
+from sheets import get_roster
 
 VALID_KEYWORDS = {"Death Knight": ["Blood", "Frost", "Unholy"],
                "Demon Hunter": ["Havoc", "Vengeance"],
@@ -49,9 +50,7 @@ async def showhelp(client, message):
 
 async def print_me_daddy(client, message):
     roster_string = get_roster_string()
-    roster_size = get_roster_size()
 
-    await client.send_message(message.channel, ":banana: Roster for Suboptimal *(" + str(roster_size) + " members total)* :banana:")
     await client.send_message(message.channel, roster_string)
 
 async def add_to_roster(client, message):
@@ -95,9 +94,18 @@ async def remove_from_roster(client,message):
 async def get_armory_link(client, message):
     # format: !armory <name>
     s = message.content.split()
-    person_is_on_roster = False
-    link = "http://us.battle.net/wow/en/character/emerald-dream/" + s[1] + "/advanced"
 
+    if len(s) == 2:
+        link = "http://us.battle.net/wow/en/character/emerald-dream/" + s[1].title() + "/advanced"
+        await client.send_message(message.channel, ":banana: Armory link for **" + str(s[1]) + "**: " + link + " :banana:")
+    elif len(s) == 3:
+        link = "http://us.battle.net/wow/en/character/" + s[2].lower() + "/" + s[1].title() + "/advanced"
+        await client.send_message(message.channel, ":banana: Armory link for **" + str(s[1]) + "**: " + link + " :banana:")
+    else:
+        link = "http://us.battle.net/wow/en/character/" + s[2].lower() + "-" + s[3].lower() + "/" + s[1].title() + "/advanced"
+        await client.send_message(message.channel, ":banana: Armory link for **" + str(s[1]) + "**: " + link + " :banana:")
+
+'''
     with open('roster.csv', 'r') as in_file:
         for row in csv.reader(in_file):
             if row[0] == s[1]:
@@ -138,6 +146,9 @@ async def get_armory_link(client, message):
                 msg2.content = "!roster add " + str(s[1]) + " " + msg2.content
                 await add_to_roster(client, msg2)
                 await client.send_message(message.channel, ":banana: Armory link for **" + str(s[1]) + "**: " + link + " :banana:")
+    '''
+
+
 
 async def get_char_name(client, message):
     msg = message.content.split()
@@ -201,63 +212,83 @@ async def get_character(client, message):
     # Output the message.
     await client.send_message(message.channel, output)
 
-
-def get_roster_size():
-    with open('roster.csv', newline='') as csvfile:
-        reader = csv.DictReader(csvfile)
-
-        count = sum(1 for row in reader)
-        return count
-
 def get_roster_string():
-    with open('roster.csv', newline='') as csvfile:
-        reader = csv.DictReader(csvfile)
+    a = get_roster()
 
-        tanks = []
-        healers = []
-        melee = []
-        ranged = []
+    tanks = []
+    healers = []
+    melee = []
+    ranged = []
 
-        for row in reader:
-            if row['Role'] == 'T':
-                tanks.append(row)
-            elif row['Role'] == 'M':
-                melee.append(row)
-            elif row['Role'] == 'R':
-                ranged.append(row)
-            elif row['Role'] == 'H':
-                healers.append(row)
-            else:
-                print("Help")
+    s = ":banana: Roster for Suboptimal *(" + str(len(a)) + " members total)* :banana:"
 
-        m =  "```"
-        m += "# # # # # # # # # # # # TANKS # # # # # # # # # # # #\n"
-        m += "-----------------------------------------------------\n"
+    for t in a:
+        if t[1] == "T":
+            tanks.append(t)
+        elif t[1] == "M":
+            melee.append(t)
+        elif t[1] == "R":
+            ranged.append(t)
+        else:
+            healers.append(t)
 
-        for player in tanks:
-            m += "{:12s}   {:12s}   {:13s}   {:7s}\n".format(player['Name'], player['Class'], player['Spec'], player['Rank'])
+    melee.sort(key=lambda tup: (tup[4], tup[0]))
+    ranged.sort(key=lambda tup: (tup[4], tup[0]))
+    tanks.sort(key=lambda tup: (tup[4], tup[0]))
+    healers.sort(key=lambda tup: (tup[4], tup[0]))
 
-        m += "\n"
-        m += "# # # # # # # # # # # # MELEE # # # # # # # # # # # #\n"
-        m += "-----------------------------------------------------\n"
+    t = Texttable()
 
-        for player in melee:
-            m += "{:12s}   {:12s}   {:13s}   {:7s}\n".format(player['Name'], player['Class'], player['Spec'], player['Rank'])
+    b = [["Name", "Role", "Class", "Spec", "Rank"]]
 
-        m += "\n"
-        m += "# # # # # # # # # # # # RANGE # # # # # # # # # # # #\n"
-        m += "-----------------------------------------------------\n"
+    names = roles = classes = specs = ranks = ""
 
-        for player in ranged:
-            m += "{:12s}   {:12s}   {:13s}   {:7s}\n".format(player['Name'], player['Class'], player['Spec'], player['Rank'])
+    for player in tanks:
+        names += player[0] + '\n'
+        roles += player[1] + '\n'
+        classes += player[2] + '\n'
+        specs += player[3] + '\n'
+        ranks += player[4] + '\n'
 
-        m += "\n"
-        m += "# # # # # # # # # # # # HEALS # # # # # # # # # # # #\n"
-        m += "-----------------------------------------------------\n"
+    b.append([names, roles, classes, specs, ranks])
 
-        for player in healers:
-            m += "{:12s}   {:12s}   {:13s}   {:7s}\n".format(player['Name'], player['Class'], player['Spec'], player['Rank'])
+    names = roles = classes = specs = ranks = ""
 
-        m += "```"
+    for player in melee:
+        names += player[0] + '\n'
+        roles += player[1] + '\n'
+        classes += player[2] + '\n'
+        specs += player[3] + '\n'
+        ranks += player[4] + '\n'
 
-        return m
+    b.append([names, roles, classes, specs, ranks])
+
+    names = roles = classes = specs = ranks = ""
+
+    for player in ranged:
+        names += player[0] + '\n'
+        roles += player[1] + '\n'
+        classes += player[2] + '\n'
+        specs += player[3] + '\n'
+        ranks += player[4] + '\n'
+
+    b.append([names, roles, classes, specs, ranks])
+
+    names = roles = classes = specs = ranks = ""
+
+    for player in healers:
+        names += player[0] + '\n'
+        roles += player[1] + '\n'
+        classes += player[2] + '\n'
+        specs += player[3] + '\n'
+        ranks += player[4] + '\n'
+
+    b.append([names, roles, classes, specs, ranks])
+
+    t.add_rows(b)
+
+    s += "```"
+    s += t.draw()
+    s += "```"
+
+    return s;

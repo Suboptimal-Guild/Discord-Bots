@@ -19,6 +19,14 @@ SCOPES = 'https://www.googleapis.com/auth/spreadsheets'
 CLIENT_SECRET_FILE = 'client_secret.json'
 APPLICATION_NAME = 'Google Sheets API Python Quickstart'
 
+# Spreadsheet IDs
+ROSTER_SHEET = '1j5kBuTppGMIp17NBvLPmHV7b2_GSuc2JRT9JhKxLDas'
+HARAMBOT_TEST_SHEET = '1K0V19lxMsIC7TzLTJ8AY8s7vjlIljpmK_5MuO2LopSI'
+
+# Spreadsheet shit
+DISCOVERY_URL = ('https://sheets.googleapis.com/$discovery/rest?'
+                'version=v4')
+
 
 def get_credentials():
     """Gets valid user credentials from storage.
@@ -48,18 +56,39 @@ def get_credentials():
         print('Storing credentials to ' + credential_path)
     return credentials
 
+def get_roster():
+    credentials = get_credentials()
+    http = credentials.authorize(httplib2.Http())
+    service = discovery.build('sheets', 'v4', http=http,
+                              discoveryServiceUrl=DISCOVERY_URL)
+
+    rangeName = 'Raw!A2:H'
+    result = service.spreadsheets().values().get(
+    spreadsheetId=ROSTER_SHEET, range=rangeName).execute()
+    values = result.get('values', [])
+
+    print(len(values))
+
+    if not values:
+        print('No data found in sheet.')
+    else:
+        a = []
+        for row in values:
+            print(len(row))
+            if row[2] == "1":
+                print("Appending row {0}".format(row))
+                a.append((row[1], row[3], row[4], row[5], row[7]))
+        return a
+
 def get_main_character_name(discord_name):
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
-    discoveryUrl = ('https://sheets.googleapis.com/$discovery/rest?'
-                    'version=v4')
     service = discovery.build('sheets', 'v4', http=http,
-                              discoveryServiceUrl=discoveryUrl)
+                              discoveryServiceUrl=DISCOVERY_URL)
 
-    spreadsheetId = '1K0V19lxMsIC7TzLTJ8AY8s7vjlIljpmK_5MuO2LopSI' # Harambot Test spreadsheet
     rangeName = 'Discord!A2:D'
     result = service.spreadsheets().values().get(
-        spreadsheetId=spreadsheetId, range=rangeName).execute()
+    spreadsheetId=HARAMBOT_TEST_SHEET, range=rangeName).execute()
     values = result.get('values', [])
 
     if not values:
@@ -77,7 +106,7 @@ def get_main_character_name(discord_name):
         print('Discord name not found!')
         return -1
 
-def get_roster():
+def insert_player():
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
     discoveryUrl = ('https://sheets.googleapis.com/$discovery/rest?'
@@ -85,8 +114,8 @@ def get_roster():
     service = discovery.build('sheets', 'v4', http=http,
                               discoveryServiceUrl=discoveryUrl)
 
-    spreadsheetId = '1j5kBuTppGMIp17NBvLPmHV7b2_GSuc2JRT9JhKxLDas' # Harambot Test spreadsheet
-    rangeName = 'B21:C' # We're adding a line of 4 cells.
+    spreadsheetId = ROSTER_SHEET
+    rangeName = 'Raw!B21:C' # We're adding a line of 4 cells.
     # Append Discord Name, Character Name, Class, and Role
     values = {'values':[["Test", "Test"],]}
     # Execute dat shieet
@@ -98,18 +127,15 @@ def get_roster():
 def add_character(discordname, charname, classname, role):
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
-    discoveryUrl = ('https://sheets.googleapis.com/$discovery/rest?'
-                    'version=v4')
     service = discovery.build('sheets', 'v4', http=http,
-                              discoveryServiceUrl=discoveryUrl)
+                              discoveryServiceUrl=DISCOVERY_URL)
 
-    spreadsheetId = '1K0V19lxMsIC7TzLTJ8AY8s7vjlIljpmK_5MuO2LopSI' # Harambot Test spreadsheet
     rangeName = 'A1:D' # We're adding a line of 4 cells.
     # Append Discord Name, Character Name, Class, and Role
     values = {'values':[[discordname, charname, classname, role],]}
     # Execute dat shieet
     result = service.spreadsheets().values().append(
-        spreadsheetId=spreadsheetId, range=rangeName,
+        spreadsheetId=ROSTER_SHEET, range=rangeName,
         valueInputOption='RAW',
         body=values).execute()
 
@@ -123,18 +149,14 @@ def main():
     """
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
-    discoveryUrl = ('https://sheets.googleapis.com/$discovery/rest?'
-                    'version=v4')
     service = discovery.build('sheets', 'v4', http=http,
-                              discoveryServiceUrl=discoveryUrl)
+                              discoveryServiceUrl=DISCOVERY_URL)
 
     # google sample v
-    #spreadsheetId = '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms'
-    spreadsheetId = '1K0V19lxMsIC7TzLTJ8AY8s7vjlIljpmK_5MuO2LopSI' # Harambot Test spreadsheet
     #rangeName = 'Class Data!A2:E'
     rangeName = 'Discord!A2:C'
     result = service.spreadsheets().values().get(
-        spreadsheetId=spreadsheetId, range=rangeName).execute()
+        spreadsheetId=HARAMBOT_TEST_SHEET, range=rangeName).execute()
     values = result.get('values', [])
 
     if not values:

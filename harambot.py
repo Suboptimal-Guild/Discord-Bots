@@ -66,6 +66,6 @@ async def on_message(message): # placeholder "bookmarks"
     elif message.content.startswith('!logs'):
         pass # do nothing yet
 
-client.accept_invite('https://discord.gg/mM5fXCe')
+client.accept_invite('https://discord.gg/NyYKejv')
 
 client.run('MjQ2MTMxMjkyMjg5MjM2OTky.CwWLNA.Un3vOVd-WKZxpQpTHswfd1ozJUk')
