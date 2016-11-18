@@ -55,6 +55,8 @@ client = discord.Client()
 #TODO: see todo over in commands for get_roster_string- dat shit ugly do
 #TODO: add offspecs to roster status command
 #TODO: roster add/delete
+#TODO: addons/WA
+#TODO: surveys with reactions
 
 @client.event
 async def on_ready():
@@ -117,7 +119,7 @@ async def on_message(message): # placeholder "bookmarks"
 
 def is_message_a_greeting(message):
     msg = message.content.lower()
-    if "hi" in msg or "hello" in msg or "hey" in msg or "sup " in msg or "whats up" in msg or "yo" in msg or "what's up" in msg:
+    if "hi" in msg or "hello" in msg or "hey" in msg or "sup " in msg or "whats up" in msg or "yo " in msg or "what's up" in msg:
         return True
     else:
         return False
