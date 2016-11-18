@@ -27,31 +27,13 @@ VALID_RANKS = ["Trial", "Raider", "Officer", "GM"]
 
 async def showhelp(client, message):
     # prints out all commands that Harambot currently knows
-    str = ":banana: :monkey_face: OOH OOH AAH AAH :monkey_face: :banana:. Currently I know the following commands:\n\n"
 
-    t = Texttable()
+    print(get_help_string())
 
-    t.add_rows([["Command", "Description"],
-                ["!armory <character_name>", "Generates an armory link for the given character."],
-                ["!chars <discord_name>", "Generates a list of the discord user's World of Warcraft characters."],
-                ["!roster add <character_name>", "Add's a character to the raid roster."],
-                ["!roster remove <character_name>", "Removes a character from the raid roster."],
-                ["!roster status <character_name>", "Prints out a quick summary of who will be absent on what days."],
-                ["!whoami", "Prints out your Discord Name, Server Nickname, and Roles."],
-                ["!whois <discord_name>", "Prints out the Discord Name, Server Nickname, and Roles of a user."]
-                ])
-
-    str += "```"
-    str += t.draw()
-    str += "```"
-
-    await client.send_message(message.channel, str)
-
+    await client.send_message(message.channel, get_help_string())
 
 async def print_me_daddy(client, message):
-    roster_string = get_roster_string()
-
-    await client.send_message(message.channel, roster_string)
+    await client.send_message(message.channel, get_roster_string())
 
 async def add_to_roster(client, message):
     # format: !roster add <name> <role> <class> <spec> <rank>
@@ -104,51 +86,6 @@ async def get_armory_link(client, message):
     else:
         link = "http://us.battle.net/wow/en/character/" + s[2].lower() + "-" + s[3].lower() + "/" + s[1].title() + "/advanced"
         await client.send_message(message.channel, ":banana: Armory link for **" + str(s[1]) + "**: " + link + " :banana:")
-
-'''
-    with open('roster.csv', 'r') as in_file:
-        for row in csv.reader(in_file):
-            if row[0] == s[1]:
-                person_is_on_roster = True
-                break
-
-    # first, verify that the requested person is actually on the roster
-    if person_is_on_roster:
-        await client.send_message(message.channel, ":banana: Armory link for **" + str(s[1]) + "**: " + link + " :banana:")
-    else:
-        await client.send_message(message.channel, ":banana: I was unable to find **" + str(s[1]) + "** on the guild roster. Would you like me to add them? :banana:")
-
-        #TODO: need to figure out multiple checks, since currently even if i say no it has to wait until the timeout to keep checking for yes. Hmm...
-        def add_check(msg):
-            return msg.content == "yes"
-
-        #msg = await client.wait_for_message(author=message.author, content='no')
-        msg = await client.wait_for_message(timeout=10, author=message.author, check=add_check)
-
-        if msg is None:
-            await client.send_message(message.channel, ":banana: Ok, **" + str(s[1]) + "** was not added. :banana:")
-        elif msg.content == "yes":
-            await client.send_message(message.channel, ":banana: Ok, please type the letter for their role followed by their class, spec, and rank, all separated by spaces. :banana:")
-
-            def check(msg):
-                valid_roles = ["T", "M", "R", "H"]
-                a = msg.content.split()
-
-                bool_one = (len(a) == 4 and a[0] in valid_roles and a[1] in VALID_KEYWORDS and a[2] in VALID_KEYWORDS[a[1]] and a[3] in VALID_RANKS)
-                bool_two = (len(a) == 5 and a[0] in valid_roles and (a[1] + " " + a[2]) in VALID_KEYWORDS and a[3] in VALID_KEYWORDS[(a[1] + " " + a[2])] and a[4] in VALID_RANKS)
-                return bool_one or bool_two
-
-            msg2 = await client.wait_for_message(timeout=15, author=message.author, check=check)
-
-            if msg2 is None:
-                 await client.send_message(message.channel, ":banana: Sorry, I was unable to add **" + s[1] +"** to the roster. :banana:")
-            else:
-                msg2.content = "!roster add " + str(s[1]) + " " + msg2.content
-                await add_to_roster(client, msg2)
-                await client.send_message(message.channel, ":banana: Armory link for **" + str(s[1]) + "**: " + link + " :banana:")
-    '''
-
-
 
 async def get_char_name(client, message):
     msg = message.content.split()
@@ -212,6 +149,32 @@ async def get_character(client, message):
     # Output the message.
     await client.send_message(message.channel, output)
 
+def get_help_string():
+    str = ":banana: :monkey_face: OOH OOH AAH AAH :monkey_face: :banana:. Currently I know the following commands:\n\n"
+    t = Texttable()
+
+    print("Texttable created!!!!!!")
+
+    t.add_rows([["Command", "Description"],
+                ["!armory <character_name> <server> (if not from ED)", "Generates an armory link for the given character."],
+                #["!chars <discord_name>", "Generates a list of the discord user's World of Warcraft characters."],
+                ["!roster add <character_name>", "Add's a character to the raid roster. (officers only)"],
+                ["!roster remove <character_name>", "Removes a character from the raid roster. (officers only)"],
+                ["!roster status <character_name>", "Prints out a quick summary of who will be absent on what days."],
+                ["!whoami", "Prints out your Discord Name, Server Nickname, and Roles."],
+                ["!whois <discord_name>", "Prints out the Discord Name, Server Nickname, and Roles of a user."],
+                ["mention the word \"joke\"", "I will tell you a joke."],
+                ["!logslink", "Posts the link to Ian's, Peter's, and Tyhler's logs."],
+                ["!logspage <character name> <server> (if not from ED)", "Generates the URL for a player's page on WarcraftLogs."]
+                ])
+
+    str += "```"
+    str += t.draw()
+    str += "```"
+
+    str += "\nI'm a work in progress with more commands coming each and every day- if you have any suggestions forward them to my overlords @Mortivius and @Ian!"
+    return str
+
 def get_roster_string():
     a = get_roster()
 
@@ -250,6 +213,12 @@ def get_roster_string():
         specs += player[3] + '\n'
         ranks += player[4] + '\n'
 
+    names = names[:-1]
+    roles = roles[:-1]
+    classes = classes[:-1]
+    specs = specs[:-1]
+    ranks = ranks[:-1]
+
     b.append([names, roles, classes, specs, ranks])
 
     names = roles = classes = specs = ranks = ""
@@ -260,6 +229,12 @@ def get_roster_string():
         classes += player[2] + '\n'
         specs += player[3] + '\n'
         ranks += player[4] + '\n'
+
+    names = names[:-1]
+    roles = roles[:-1]
+    classes = classes[:-1]
+    specs = specs[:-1]
+    ranks = ranks[:-1]
 
     b.append([names, roles, classes, specs, ranks])
 
@@ -272,6 +247,12 @@ def get_roster_string():
         specs += player[3] + '\n'
         ranks += player[4] + '\n'
 
+    names = names[:-1]
+    roles = roles[:-1]
+    classes = classes[:-1]
+    specs = specs[:-1]
+    ranks = ranks[:-1]
+
     b.append([names, roles, classes, specs, ranks])
 
     names = roles = classes = specs = ranks = ""
@@ -282,6 +263,12 @@ def get_roster_string():
         classes += player[2] + '\n'
         specs += player[3] + '\n'
         ranks += player[4] + '\n'
+
+    names = names[:-1]
+    roles = roles[:-1]
+    classes = classes[:-1]
+    specs = specs[:-1]
+    ranks = ranks[:-1]
 
     b.append([names, roles, classes, specs, ranks])
 

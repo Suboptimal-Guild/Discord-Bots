@@ -76,7 +76,7 @@ def get_roster():
         for row in values:
             print(len(row))
             if row[2] == "1":
-                print("Appending row {0}".format(row))
+                #print("Appending row {0}".format(row))
                 a.append((row[1], row[3], row[4], row[5], row[7]))
         return a
 
