@@ -3,11 +3,12 @@
 import discord
 import asyncio
 import csv
+from random import randint
 
 
 #TODO: ensure proper controls when calling commands, i.e. only certain ranks can invoke certain commands
 
-from commands import print_me_daddy as pmd
+from commands import print_roster as pr
 from commands import add_to_roster as atr
 from commands import remove_from_roster as rfr
 from commands import get_armory_link as gal
@@ -15,12 +16,45 @@ from commands import get_char_name as gcn
 from commands import get_own_name as gon
 from commands import get_character as getchar
 from commands import showhelp
+from commands import get_logs_page
+from commands import get_logs_links
 
+# constants
+MIDDLE_FINGER_GORILLA_URL = "http://3.bp.blogspot.com/-s3eobLzuVm0/Twxkz6yOe_I/AAAAAAAACHg/wxDw-nWa_eU/s1600/Funny+Gorilla5.jpg"
+SHOCKED_MONKEY_URL = "https://s-media-cache-ak0.pinimg.com/736x/86/53/41/8653410a1ee96e3ac9bb22b4ed08c556.jpg"
+LAUGHING_GORILLA_URL = "https://tigerlilytoph.files.wordpress.com/2012/01/laughing-gorilla.jpg"
+LAUGHING_GORILLA_URL2 = "http://www.onlygod365.com/wp-content/uploads/2013/02/LaughingGorilla1.jpg"
+LAUGHING_GORILLA_URL3 = "http://static.squarespace.com/static/51806e5ae4b0809658b411ef/t/51bd2aa9e4b0cc528082c718/1371351722080/HAHA-Gorilla.jpg?format=500w"
+LAUGHING_GORILLA_URL4 = "http://myfunnypics.org/main.php?g2_view=core.DownloadItem&g2_itemId=736&g2_serialNumber=2"
+LAUGHING_GORILLA_URL5 = "http://www.zooborns.com/.a/6a010535647bf3970b01310f6b78be970c-600wi"
+LAUGHING_GORILLA_URL6 = "https://pbs.twimg.com/media/CIWeyDEUwAAs_AO.jpg"
+LOVE_GORILLA_URL = "https://arigorillatrekking.files.wordpress.com/2014/02/gorilal-love.jpg"
+THUMBS_UP_GORILLA = "http://gorillaloveproject.org/files/files/gorilla.jpg"
+NO_PROBLEM_GORILLA = "http://www.animalsbase.com/wp-content/uploads/2015/10/Powerful-Gorilla-Lifts-Fist-Looks-At-Photographer.jpg"
+
+HARAMBOT = "Harambot 🍌"
+
+LAUGHING_GORILLAS = [LAUGHING_GORILLA_URL, LAUGHING_GORILLA_URL2, LAUGHING_GORILLA_URL3, LAUGHING_GORILLA_URL4, LAUGHING_GORILLA_URL5, LAUGHING_GORILLA_URL6]
 
 # sheets interface
 #from google_sheets_interface import get_main_character_name as gmcn
 
 client = discord.Client()
+
+'''LIST OF ALL THINGS TO ADD:
+'''
+#TODO: raid announcements 30 min prior to raid time starting
+#TODO: drag everyone into raid channel when raid starts
+#TODO: some type of alts command
+#TODO: epgp commands
+#TODO: log pages for people since WL uses generated IDs unlike armory which uses character/realmname
+#TODO: audit (maybe full audit for officers, individual audit of themselves for everyone?)
+#TODO: bis command of some sort?
+#TODO: look into EMBED object documentation in python library
+#TODO: tagging by Harambot in a message??
+#TODO: see todo over in commands for get_roster_string- dat shit ugly do
+#TODO: add offspecs to roster status command
+#TODO: roster add/delete
 
 @client.event
 async def on_ready():
@@ -31,21 +65,16 @@ async def on_ready():
 
 @client.event
 async def on_message(message): # placeholder "bookmarks"
-    ### COMMANDS INVOKABLE BY EVERYONE ###
-
-    ### check is
-    ### if <desired role> in message.author.roles
-
     # also we want to post messages in the channe lwhere the user asked, but if possible make the message only viewable to them kinda like the default bot can do
-
-    ### COMMANDS INVOKABLE BY OFFICERS ###
-    if message.content.startswith('!test'):
+    if message.author.name == HARAMBOT:
+        pass
+    elif message.content.startswith('!test'):
         await client.send_message(message.channel, 'I\'m a fuckboy.')
     elif message.content.startswith('!roster status'):
-        await pmd(client, message)
-    elif message.content.startswith('!roster add'):
+        await pr(client, message)
+    elif message.content.startswith('!roster add') and is_officer(message.author): # officers only
         await atr(client, message)
-    elif message.content.startswith('!roster remove'):
+    elif message.content.startswith('!roster remove') and is_officer(message.author): # officers only
         await rfr(client, message)
     elif message.content.startswith('!armory'):
         await gal(client, message)
@@ -55,16 +84,99 @@ async def on_message(message): # placeholder "bookmarks"
         await gon(client, message)
     elif message.content.startswith('!chars'):
         await getchar(client, message)
-    elif message.content.startswith('!help'):
+    elif message.content == '!help':
         await showhelp(client, message)
     elif message.content.startswith('!epgp'):
         pass # do nothing yet
     elif message.content.startswith('!bis'):
         pass # do nothing yet
-    elif message.content.startswith('!audit'):
+    elif message.content.startswith('!audit') and is_officer(message.author): #officers only (unless maybe people wanna run the audit on themselves?)
         pass # do nothing yet
     elif message.content.startswith('!logs'):
-        pass # do nothing yet
+        await get_logs_links(client, message)
+    elif message.content.startswith('!logspage'):
+        # DOES NOT WORK, see above TODO
+        await get_logs_page(client, message)
+    # fun stuff
+    elif "banana" in message.content.lower():
+        await client.send_message(message.channel, SHOCKED_MONKEY_URL + "\n... I love bananas. + 100 EP")
+    elif "joke" in message.content.lower():
+        await tell_joke(client, message)
+    elif "love" in message.content.lower() and "harambot" in message.content.lower():
+        await client.send_message(message.channel, "\n:monkey_face: + 50 EP I love you too, " + message.author.name + ". :monkey_face:\n" + LOVE_GORILLA_URL)
+    elif "fuck" in message.content.lower() and "harambot" in message.content.lower():
+        await client.send_message(message.channel, MIDDLE_FINGER_GORILLA_URL + "\n:monkey: - 50 EP :monkey:")
+    elif "harambot" in message.content.lower() and is_message_a_greeting(message):
+        await client.send_message(message.channel, ":banana: :monkey_face: Greetings, " + message.author.name + ". :banana:")
+    elif "harambot" in message.content.lower() and is_message_a_thank_you(message):
+        await client.send_message(message.channel, ":banana: :monkey_face: You got it, " + message.author.name + ". :banana:\n" + NO_PROBLEM_GORILLA)
+    elif did_mention_harambot(client, message):
+        await client.send_message(message.channel, ":monkey: You rang, " + message.author.name + "? :monkey:")
+    elif "harambot" in message.content.lower():
+        await client.send_message(message.channel, "Someone called?")
+
+def is_message_a_greeting(message):
+    msg = message.content.lower()
+    if "hi" in msg or "hello" in msg or "hey" in msg or "sup " in msg or "whats up" in msg or "yo" in msg or "what's up" in msg:
+        return True
+    else:
+        return False
+
+def is_message_a_thank_you(message):
+    msg = message.content.lower()
+    if "thanks" in msg or "thank you" in msg or "thank ya" in msg or "ty" == msg or "ty " in msg or "thx" in msg:
+        return True
+    else:
+        return False
+
+def is_officer(member):
+    return is_member_of_role(member, "Officers") or is_member_of_role(member, "Starlord")
+
+def is_member_of_role(member, role_name):
+    for role in member.roles:
+        if role_name == role.name:
+            return True
+    return False
+
+def did_mention_harambot(client, message):
+    s = ""
+    for m in message.mentions:
+        if m.name == HARAMBOT:
+            return True
+    return False
+
+
+async def tell_joke(client, message):
+    rand = randint(0,len(JOKE_QUESTIONS)-1)
+    await client.send_message(message.channel, ":monkey: " + JOKE_QUESTIONS[rand] + " :monkey:") # need random number
+
+    def add_check(msg):
+        return msg.content in JOKE_ANSWERS[rand].lower() and len(msg.content) > 0.5 * len(JOKE_ANSWERS[rand])
+
+    msg = await client.wait_for_message(timeout=8, author=message.author, check=add_check)
+
+    if msg is None:
+        await client.send_message(message.channel, ":monkey_face: " + JOKE_ANSWERS[rand] + " :monkey_face:\n\n" + LAUGHING_GORILLAS[randint(0,len(LAUGHING_GORILLAS)-1)])
+    else:
+        await client.send_message(message.channel, ":banana: Correct! + 50 EP, " + message.author.name + " :banana:\n\n" + THUMBS_UP_GORILLA)
+
+JOKE_QUESTIONS = ["What do you call an angry monkey?",
+"What do you call a monkey that sells potato chips?",
+"Where do monkeys go to drink?",
+"Why do monkeys like bananas?",
+"Where should a monkey go when he loses his tail?",
+"Why should you never fight with a monkey?",
+"Where do chimps get their gossip?",
+"What do you call a baby monkey?"]
+
+JOKE_ANSWERS = ["Furious George.",
+"A chipmunk.",
+"The monkey bars.",
+"Because they have appeal.",
+"To a retailer!",
+"They use gorilla warfare.",
+"Through the ape vine.",
+"A chimp off the old block."]
 
 client.accept_invite('https://discord.gg/NyYKejv')
 

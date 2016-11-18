@@ -27,31 +27,20 @@ VALID_RANKS = ["Trial", "Raider", "Officer", "GM"]
 
 async def showhelp(client, message):
     # prints out all commands that Harambot currently knows
-    str = ":banana: :monkey_face: OOH OOH AAH AAH :monkey_face: :banana:. Currently I know the following commands:\n\n"
+    header, mainstring, footer = get_help_strings()
 
-    t = Texttable()
+    await client.send_message(message.channel, header)
+    await client.send_message(message.channel, mainstring)
+    await client.send_message(message.channel, footer)
 
-    t.add_rows([["Command", "Description"],
-                ["!armory <character_name>", "Generates an armory link for the given character."],
-                ["!chars <discord_name>", "Generates a list of the discord user's World of Warcraft characters."],
-                ["!roster add <character_name>", "Add's a character to the raid roster."],
-                ["!roster remove <character_name>", "Removes a character from the raid roster."],
-                ["!roster status <character_name>", "Prints out a quick summary of who will be absent on what days."],
-                ["!whoami", "Prints out your Discord Name, Server Nickname, and Roles."],
-                ["!whois <discord_name>", "Prints out the Discord Name, Server Nickname, and Roles of a user."]
-                ])
+async def print_roster(client, message):
+    header, tanks, melee, ranged, healers = get_roster_strings()
 
-    str += "```"
-    str += t.draw()
-    str += "```"
-
-    await client.send_message(message.channel, str)
-
-
-async def print_me_daddy(client, message):
-    roster_string = get_roster_string()
-
-    await client.send_message(message.channel, roster_string)
+    await client.send_message(message.channel, header)
+    await client.send_message(message.channel, tanks)
+    await client.send_message(message.channel, melee)
+    await client.send_message(message.channel, ranged)
+    await client.send_message(message.channel, healers)
 
 async def add_to_roster(client, message):
     # format: !roster add <name> <role> <class> <spec> <rank>
@@ -92,7 +81,7 @@ async def remove_from_roster(client,message):
     await client.send_message(message.channel, new_roster_string)
 
 async def get_armory_link(client, message):
-    # format: !armory <name>
+    # format: !armory <name> <optional server>
     s = message.content.split()
 
     if len(s) == 2:
@@ -101,54 +90,22 @@ async def get_armory_link(client, message):
     elif len(s) == 3:
         link = "http://us.battle.net/wow/en/character/" + s[2].lower() + "/" + s[1].title() + "/advanced"
         await client.send_message(message.channel, ":banana: Armory link for **" + str(s[1]) + "**: " + link + " :banana:")
+    #TODO: we sure there are no realms that are 3 words???
     else:
         link = "http://us.battle.net/wow/en/character/" + s[2].lower() + "-" + s[3].lower() + "/" + s[1].title() + "/advanced"
         await client.send_message(message.channel, ":banana: Armory link for **" + str(s[1]) + "**: " + link + " :banana:")
 
-'''
-    with open('roster.csv', 'r') as in_file:
-        for row in csv.reader(in_file):
-            if row[0] == s[1]:
-                person_is_on_roster = True
-                break
+async def get_logs_page(client, message):
+    s = message.content.split()
+    pass
 
-    # first, verify that the requested person is actually on the roster
-    if person_is_on_roster:
-        await client.send_message(message.channel, ":banana: Armory link for **" + str(s[1]) + "**: " + link + " :banana:")
-    else:
-        await client.send_message(message.channel, ":banana: I was unable to find **" + str(s[1]) + "** on the guild roster. Would you like me to add them? :banana:")
+async def get_logs_links(client, message):
+    peter_logs_url = "https://www.warcraftlogs.com/guilds/usercalendar/256766"
+    ian_logs_url = "https://www.warcraftlogs.com/guilds/usercalendar/5415"
+    tyhler_logs_url = "https://www.warcraftlogs.com/guilds/201686"
 
-        #TODO: need to figure out multiple checks, since currently even if i say no it has to wait until the timeout to keep checking for yes. Hmm...
-        def add_check(msg):
-            return msg.content == "yes"
-
-        #msg = await client.wait_for_message(author=message.author, content='no')
-        msg = await client.wait_for_message(timeout=10, author=message.author, check=add_check)
-
-        if msg is None:
-            await client.send_message(message.channel, ":banana: Ok, **" + str(s[1]) + "** was not added. :banana:")
-        elif msg.content == "yes":
-            await client.send_message(message.channel, ":banana: Ok, please type the letter for their role followed by their class, spec, and rank, all separated by spaces. :banana:")
-
-            def check(msg):
-                valid_roles = ["T", "M", "R", "H"]
-                a = msg.content.split()
-
-                bool_one = (len(a) == 4 and a[0] in valid_roles and a[1] in VALID_KEYWORDS and a[2] in VALID_KEYWORDS[a[1]] and a[3] in VALID_RANKS)
-                bool_two = (len(a) == 5 and a[0] in valid_roles and (a[1] + " " + a[2]) in VALID_KEYWORDS and a[3] in VALID_KEYWORDS[(a[1] + " " + a[2])] and a[4] in VALID_RANKS)
-                return bool_one or bool_two
-
-            msg2 = await client.wait_for_message(timeout=15, author=message.author, check=check)
-
-            if msg2 is None:
-                 await client.send_message(message.channel, ":banana: Sorry, I was unable to add **" + s[1] +"** to the roster. :banana:")
-            else:
-                msg2.content = "!roster add " + str(s[1]) + " " + msg2.content
-                await add_to_roster(client, msg2)
-                await client.send_message(message.channel, ":banana: Armory link for **" + str(s[1]) + "**: " + link + " :banana:")
-    '''
-
-
+    s = "Peter's logs: " + peter_logs_url + "\nIan's logs: " + ian_logs_url + "\nTyhler's logs: " + tyhler_logs_url
+    await client.send_message(message.channel, ":banana: " + s + " :banana:")
 
 async def get_char_name(client, message):
     msg = message.content.split()
@@ -212,83 +169,152 @@ async def get_character(client, message):
     # Output the message.
     await client.send_message(message.channel, output)
 
-def get_roster_string():
-    a = get_roster()
+def get_help_strings():
+    header_text = ":banana: Currently I know the following commands: :banana:"
+    t = Texttable()
+
+    t.add_rows([["Command", "Description"],
+                ["!armory <character_name> <server> (if not from ED)", "Generates an armory link for the given character."],
+                #["!chars <discord_name>", "Generates a list of the discord user's World of Warcraft characters."],
+                ["!roster add <name>", "Adds to the raid roster."],
+                ["!roster remove <name>", "Removes from the raid roster."],
+                ["!roster status <name>", "Prints out current raid roster."],
+                ["!whoami", "Prints out your Discord info."],
+                ["!whois <discord_name>", "Prints out the Discord info of a user."],
+                #["!epgp",""],
+                #["!bis",""],
+                #["!audit",""],
+                ["mention the word \"joke\"", "I will tell you a joke."],
+                ["!logs", "Posts the WarcraftLogs links."],
+                #["!logspage <character name> <server> (if not from ED)", "Generates the URL for a player's page on WarcraftLogs."]
+                ])
+
+    str = "```"
+    str += t.draw()
+    str += "```"
+
+    footer_text = "\n:monkey_face: I'm a work in progress with more commands coming each and every day- if you have any suggestions forward them to my overlords Mortivius and Ian! :monkey_face:"
+    return header_text, str, footer_text
+
+#TODO: my god we need to make this method more elegant
+def get_roster_strings():
+    roster = get_roster()
 
     tanks = []
     healers = []
     melee = []
     ranged = []
 
-    s = ":banana: Roster for Suboptimal *(" + str(len(a)) + " members total)* :banana:"
+    header_string = ":banana: Roster for Suboptimal *(" + str(len(roster)) + " members total)* :banana:"
+    tank_string = ranged_string = melee_string = healer_string = ""
 
-    for t in a:
-        if t[1] == "T":
-            tanks.append(t)
-        elif t[1] == "M":
-            melee.append(t)
-        elif t[1] == "R":
-            ranged.append(t)
+    # we know based on the method defined in sheets.py that player[1] is the letter that indicates role
+    for player in roster:
+        newplayer = [player[0],player[2],player[3],player[4]]
+        if player[1] == "T":
+            tanks.append(newplayer)
+        elif player[1] == "M":
+            melee.append(newplayer)
+        elif player[1] == "R":
+            ranged.append(newplayer)
         else:
-            healers.append(t)
+            healers.append(newplayer)
 
-    melee.sort(key=lambda tup: (tup[4], tup[0]))
-    ranged.sort(key=lambda tup: (tup[4], tup[0]))
-    tanks.sort(key=lambda tup: (tup[4], tup[0]))
-    healers.sort(key=lambda tup: (tup[4], tup[0]))
+    melee.sort(key=lambda tup: (tup[3], tup[0]))
+    ranged.sort(key=lambda tup: (tup[3], tup[0]))
+    tanks.sort(key=lambda tup: (tup[3], tup[0]))
+    healers.sort(key=lambda tup: (tup[3], tup[0]))
 
     t = Texttable()
-
-    b = [["Name", "Role", "Class", "Spec", "Rank"]]
-
+    b = [["Name", "Class", "Spec", "Rank"]]
     names = roles = classes = specs = ranks = ""
 
     for player in tanks:
         names += player[0] + '\n'
-        roles += player[1] + '\n'
-        classes += player[2] + '\n'
-        specs += player[3] + '\n'
-        ranks += player[4] + '\n'
+        #roles += player[1] + '\n'
+        classes += player[1] + '\n'
+        specs += player[2] + '\n'
+        ranks += player[3] + '\n'
 
-    b.append([names, roles, classes, specs, ranks])
+    names = names[:-1]
+    #roles = roles[:-1]
+    classes = classes[:-1]
+    specs = specs[:-1]
+    ranks = ranks[:-1]
 
+    b.append([names, classes, specs, ranks])
+    t.add_rows(b)
+    tank_string += "**TANKS**\n```"
+    tank_string += t.draw()
+    tank_string += "```"
+
+    t = Texttable()
+    b = [["Name", "Class", "Spec", "Rank"]]
     names = roles = classes = specs = ranks = ""
 
     for player in melee:
         names += player[0] + '\n'
-        roles += player[1] + '\n'
-        classes += player[2] + '\n'
-        specs += player[3] + '\n'
-        ranks += player[4] + '\n'
+        #roles += player[1] + '\n'
+        classes += player[1] + '\n'
+        specs += player[2] + '\n'
+        ranks += player[3] + '\n'
 
-    b.append([names, roles, classes, specs, ranks])
+    names = names[:-1]
+    #roles = roles[:-1]
+    classes = classes[:-1]
+    specs = specs[:-1]
+    ranks = ranks[:-1]
 
+    b.append([names, classes, specs, ranks])
+    t.add_rows(b)
+    melee_string += "**MELEE DPS**\n```"
+    melee_string += t.draw()
+    melee_string += "```"
+
+    t = Texttable()
+    b = [["Name", "Class", "Spec", "Rank"]]
     names = roles = classes = specs = ranks = ""
 
     for player in ranged:
         names += player[0] + '\n'
-        roles += player[1] + '\n'
-        classes += player[2] + '\n'
-        specs += player[3] + '\n'
-        ranks += player[4] + '\n'
+        #roles += player[1] + '\n'
+        classes += player[1] + '\n'
+        specs += player[2] + '\n'
+        ranks += player[3] + '\n'
 
-    b.append([names, roles, classes, specs, ranks])
+    names = names[:-1]
+    #roles = roles[:-1]
+    classes = classes[:-1]
+    specs = specs[:-1]
+    ranks = ranks[:-1]
 
+    b.append([names, classes, specs, ranks])
+    t.add_rows(b)
+    ranged_string += "**RANGED DPS**\n```"
+    ranged_string += t.draw()
+    ranged_string += "```"
+
+    t = Texttable()
+    b = [["Name", "Class", "Spec", "Rank"]]
     names = roles = classes = specs = ranks = ""
 
     for player in healers:
         names += player[0] + '\n'
-        roles += player[1] + '\n'
-        classes += player[2] + '\n'
-        specs += player[3] + '\n'
-        ranks += player[4] + '\n'
+        #roles += player[1] + '\n'
+        classes += player[1] + '\n'
+        specs += player[2] + '\n'
+        ranks += player[3] + '\n'
 
-    b.append([names, roles, classes, specs, ranks])
+    names = names[:-1]
+    #roles = roles[:-1]
+    classes = classes[:-1]
+    specs = specs[:-1]
+    ranks = ranks[:-1]
 
+    b.append([names, classes, specs, ranks])
     t.add_rows(b)
+    healer_string += "**HEALERS**\n```"
+    healer_string += t.draw()
+    healer_string += "```"
 
-    s += "```"
-    s += t.draw()
-    s += "```"
-
-    return s;
+    return header_string, tank_string, melee_string, ranged_string, healer_string
