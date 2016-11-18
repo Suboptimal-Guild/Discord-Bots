@@ -27,12 +27,9 @@ VALID_RANKS = ["Trial", "Raider", "Officer", "GM"]
 
 async def showhelp(client, message):
     # prints out all commands that Harambot currently knows
-
-    print(get_help_string())
-
     await client.send_message(message.channel, get_help_string())
 
-async def print_me_daddy(client, message):
+async def print_roster(client, message):
     await client.send_message(message.channel, get_roster_string())
 
 async def add_to_roster(client, message):
@@ -153,8 +150,6 @@ def get_help_string():
     str = ":banana: :monkey_face: OOH OOH AAH AAH :monkey_face: :banana:. Currently I know the following commands:\n\n"
     t = Texttable()
 
-    print("Texttable created!!!!!!")
-
     t.add_rows([["Command", "Description"],
                 ["!armory <character_name> <server> (if not from ED)", "Generates an armory link for the given character."],
                 #["!chars <discord_name>", "Generates a list of the discord user's World of Warcraft characters."],
@@ -172,7 +167,7 @@ def get_help_string():
     str += t.draw()
     str += "```"
 
-    str += "\nI'm a work in progress with more commands coming each and every day- if you have any suggestions forward them to my overlords @Mortivius and @Ian!"
+    str += "\nI'm a work in progress with more commands coming each and every day- if you have any suggestions forward them to my overlords @Mortivius and @Ian! :monkey_face:"
     return str
 
 def get_roster_string():

@@ -8,7 +8,7 @@ from random import randint
 
 #TODO: ensure proper controls when calling commands, i.e. only certain ranks can invoke certain commands
 
-from commands import print_me_daddy as pmd
+from commands import print_roster as pr
 from commands import add_to_roster as atr
 from commands import remove_from_roster as rfr
 from commands import get_armory_link as gal
@@ -59,7 +59,7 @@ async def on_message(message): # placeholder "bookmarks"
     elif message.content.startswith('!test'):
         await client.send_message(message.channel, 'I\'m a fuckboy.')
     elif message.content.startswith('!roster status'):
-        await pmd(client, message)
+        await pr(client, message)
     elif message.content.startswith('!roster add') and is_officer(message.author): # officers only
         await atr(client, message)
     elif message.content.startswith('!roster remove') and is_officer(message.author): # officers only
@@ -73,8 +73,7 @@ async def on_message(message): # placeholder "bookmarks"
     elif message.content.startswith('!chars'):
         await getchar(client, message)
     elif message.content == '!help':
-        #await client.send_message(message.channel, get_help_string())
-        await showhelp(client, message) #TODO: fix this shit? getting error code 400
+        await showhelp(client, message)
     elif message.content.startswith('!epgp'):
         pass # do nothing yet
     elif message.content.startswith('!bis'):
