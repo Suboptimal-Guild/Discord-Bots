@@ -91,7 +91,9 @@ async def on_message(message): # placeholder "bookmarks"
         await showhelp(client, message)
     elif message.content.startswith('!epgp'):
         pass # do nothing yet
-    elif message.content.startswith('!epgp export'):
+    elif message.content.startswith('!epgp leaderboard'):
+        pass # do nothing yet
+    elif message.content.startswith('!epgp export') and is_officer(message.author):
         await update_EPGP(client message)
     elif message.content.startswith('!bis'):
         pass # do nothing yet

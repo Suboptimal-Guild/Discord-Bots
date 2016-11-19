@@ -2,6 +2,7 @@ from __future__ import print_function
 import httplib2
 import os
 import json
+from texttable import Texttable
 
 from apiclient import discovery
 from oauth2client import client
@@ -140,29 +141,27 @@ def add_character(discordname, charname, classname, role):
         valueInputOption='RAW',
         body=values).execute()
 
-def write_EPGP():
-    '''
-    def make_comparator(less_than):
-        def compare(x, y):
-            if float(x[2]) / float(x[3]) > float(y[2]) / float(y[3]):
-                return 1
-            elif float(x[2]) / float(x[3]) < float(y[2]) / float(y[3]):
-                return -1
-            else:
-                return 0
-        return compare
-        '''
+def get_EPGP():
+    credentials = get_credentials()
+    http = credentials.authorize(httplib2.Http())
+    service = discovery.build('sheets', 'v4', http=http,
+                              discoveryServiceUrl=DISCOVERY_URL)
+    # Pull the EP/GP data from the spreadsheet.
+    rangeName = 'EPGP!A2:F'
+    result = service.spreadsheets().values().get(
+    spreadsheetId=ROSTER_SHEET, range=rangeName).execute()
+    values = result.get('values', [])
 
+    return values
+
+
+def write_EPGP(a):
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('sheets', 'v4', http=http,
                               discoveryServiceUrl=DISCOVERY_URL)
 
-    s = "{\"base_gp\":25000,\"decay_p\":25,\"extras_p\":50,\"guild\":\"Suboptimal\",\"min_ep\":25000,\"realm\":\"Emerald Dream\",\"region\":\"us\",\"roster\":[[\"Cantim\",42000,25000],[\"Carriedaway\",42000,25000],[\"Chuckfilthy\",9000,25000],[\"Datkirin\",42000,25000],[\"Hum\u00f4ngous\",42000,25000],[\"Ilisardorei\",42000,25000],[\"Kamel\",42000,25000],[\"Kiendan\",42000,25000],[\"Killdu\",42000,25000],[\"Luckymega\",39000,25000],[\"Magisean\",42000,25000],[\"Mortivius\",42000,25000],[\"Pearcake\",42000,25000],[\"Polinator\",42000,25000],[\"Ripparian\",42000,25000],[\"Rnjeezus\",42000,25000],[\"Ropez\",42000,25000],[\"Shadokias\",42000,25000],[\"Tetsuklobbra\",42000,25000],[\"Valorrian\",3000,25000],[\"Vexful\",42000,25000],[\"Xalyndra\",42000,25000]],\"timestamp\":1479446280}"
-
-    dict = json.loads(s)
-    a = dict['roster']
-
+    # Sort by EP/GP ratio.
     a.sort(key=lambda x: (x[1] / x[2]), reverse=True)
 
     rangeName = 'RawCopy!A2:H'
@@ -233,4 +232,5 @@ if __name__ == '__main__':
     #get_main_character_name('Mortivius (Peter)')
     #add_character('Steve', 'Valorok', 'Warrior', 'Tank')
     #get_roster()
-    write_EPGP()
+    #write_EPGP()
+    get_EPGP()

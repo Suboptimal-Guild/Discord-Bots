@@ -1,0 +1,206 @@
+{
+  "Death Knight": {
+    "Blood": {
+      "Role": "T",
+      "Main Stat": "S",
+      "Armor Type": "P"
+    },
+    "Frost": {
+      "Role": "M",
+      "Main Stat": "S",
+      "Armor Type": "P"
+    },
+    "Unholy": {
+      "Role": "M",
+      "Main Stat": "A",
+      "Armor Type": "P"
+    }
+  },
+  "Demon Hunter": {
+    "Havoc": {
+      "Role": "M",
+      "Main Stat": "A",
+      "Armor Type": "L"
+    },
+    "Vengeance": {
+      "Role": "T",
+      "Main Stat": "A",
+      "Armor Type": "L"
+    }
+  },
+  "Druid": {
+    "Balance": {
+      "Role": "R",
+      "Main Stat": "I",
+      "Armor Type": "L"
+    },
+    "Feral": {
+      "Role": "M",
+      "Main Stat": "A",
+      "Armor Type": "L"
+    },
+    "Guardian": {
+      "Role": "T",
+      "Main Stat": "A",
+      "Armor Type": "L"
+    },
+    "Restoration": {
+      "Role": "H",
+      "Main Stat": "A",
+      "Armor Type": "L"
+    }
+  },
+  "Hunter": {
+    "Beast Mastery": {
+      "Role": "R",
+      "Main Stat": "A",
+      "Armor Type": "M"
+    },
+    "Marksmanship": {
+      "Role": "R",
+      "Main Stat": "A",
+      "Armor Type": "M"
+    },
+    "Survival": {
+      "Role": "M",
+      "Main Stat": "A",
+      "Armor Type": "M"
+    }
+  },
+  "Mage": {
+    "Arcane": {
+      "Role": "R",
+      "Main Stat": "I",
+      "Armor Type": "C"
+    },
+    "Fire": {
+      "Role": "R",
+      "Main Stat": "I",
+      "Armor Type": "C"
+    },
+    "Frost": {
+      "Role": "R",
+      "Main Stat": "I",
+      "Armor Type": "C"
+    }
+  },
+  "Monk": {
+    "Brewmaster": {
+      "Role": "T",
+      "Main Stat": "A",
+      "Armor Type": "L"
+    },
+    "Mistweaver": {
+      "Role": "H",
+      "Main Stat": "I",
+      "Armor Type": "L"
+    },
+    "Windwalker": {
+      "Role": "M",
+      "Main Stat": "A",
+      "Armor Type": "L"
+    }
+  },
+  "Paladin": {
+    "Holy": {
+      "Role": "H",
+      "Main Stat": "I",
+      "Armor Type": "P"
+    },
+    "Protection": {
+      "Role": "T",
+      "Main Stat": "S",
+      "Armor Type": "P"
+    },
+    "Retribution": {
+      "Role": "M",
+      "Main Stat": "S",
+      "Armor Type": "P"
+    }
+  },
+  "Priest": {
+    "Discipline": {
+      "Role": "H",
+      "Main Stat": "I",
+      "Armor Type": "C"
+    },
+    "Holy": {
+      "Role": "H",
+      "Main Stat": "I",
+      "Armor Type": "C"
+    },
+    "Shadow": {
+      "Role": "R",
+      "Main Stat": "I",
+      "Armor Type": "C"
+    }
+  },
+  "Rogue": {
+    "Assassination": {
+      "Role": "M",
+      "Main Stat": "A",
+      "Armor Type": "L"
+    },
+    "Outlaw": {
+      "Role": "M",
+      "Main Stat": "A",
+      "Armor Type": "L"
+    },
+    "Subtlety": {
+      "Role": "M",
+      "Main Stat": "A",
+      "Armor Type": "L"
+    }
+  },
+  "Shaman": {
+    "Elemental": {
+      "Role": "R",
+      "Main Stat": "I",
+      "Armor Type": "M"
+    },
+    "Enhancement": {
+      "Role": "M",
+      "Main Stat": "A",
+      "Armor Type": "M"
+    },
+    "Restoration": {
+      "Role": "H",
+      "Main Stat": "I",
+      "Armor Type": "M"
+    }
+  },
+  "Warlock": {
+    "Affliction": {
+      "Role": "R",
+      "Main Stat": "I",
+      "Armor Type": "C"
+    },
+    "Demonology": {
+      "Role": "R",
+      "Main Stat": "I",
+      "Armor Type": "C"
+    },
+    "Destruction": {
+      "Role": "R",
+      "Main Stat": "I",
+      "Armor Type": "C"
+    }
+  },
+  "Warrior": {
+    "Arms": {
+      "Role": "M",
+      "Main Stat": "S",
+      "Armor Type": "P"
+    },
+    "Fury": {
+      "Role": "M",
+      "Main Stat": "S",
+      "Armor Type": "P"
+    },
+    "Protection": {
+      "Role": "T",
+      "Main Stat": "S",
+      "Armor Type": "P"
+    }
+  }
+}

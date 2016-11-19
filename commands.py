@@ -25,8 +25,6 @@ VALID_KEYWORDS = {"Death Knight": ["Blood", "Frost", "Unholy"],
                "Warlock": ["Affliction", "Demonology", "Destruction"],
                "Warrior": ["Arms", "Fury", "Protection"]}
 
-VALID_RANKS = ["Trial", "Raider", "Officer", "GM"]
-
 async def showhelp(client, message):
     # prints out all commands that Harambot currently knows
     header, mainstring, footer = get_help_strings()
@@ -198,12 +196,32 @@ def get_help_strings():
     footer_text = "\n:monkey_face: I'm a work in progress with more commands coming each and every day- if you have any suggestions forward them to my overlords Mortivius and Ian! :monkey_face:"
     return header_text, str, footer_text
 
+async def print_EPGP(client, message):
+    a = get_EPGP()
+
+    t = Texttable()
+
+    b = [["Name", "EP", "GP", "Ratio"]]
+
+    for row in a:
+        b.append([row[0], row[3], row[4], row[5]])
+
+    t.add_rows(b)
+
+    output = "Full EPGP Leaderboard for **Suboptimal**"
+    output += "'''"
+    output += t.draw()
+    output += "'''"
+
+    await client.send_message(message.channel, output)
+
 async def update_EPGP(client, message):
     s = message.content.split()
     dict = json.loads(s)
     roster = dict['roster']
 
     write_EPGP(roster)
+    await client.send_message(message.channel, "EPGP is now updated!")
 
 
 #TODO: my god we need to make this method more elegant
