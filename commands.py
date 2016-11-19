@@ -3,12 +3,14 @@ from texttable import Texttable
 import discord
 import asyncio
 import csv
+import json
 
 #TODO: modularize code more and split into multiple files, im exhausted as fuck so just cramming it in here for now, it works though
 
 # for some reason, there is a massive stink with this??? i think maybe python 2.7 vs 3.5 conflict... ill keep working in the google_sheets_interface file to get functionality down before linking it up
 from sheets import get_main_character_name as gmcn
 from sheets import get_roster
+from sheets import write_EPGP
 
 VALID_KEYWORDS = {"Death Knight": ["Blood", "Frost", "Unholy"],
                "Demon Hunter": ["Havoc", "Vengeance"],
@@ -195,6 +197,14 @@ def get_help_strings():
 
     footer_text = "\n:monkey_face: I'm a work in progress with more commands coming each and every day- if you have any suggestions forward them to my overlords Mortivius and Ian! :monkey_face:"
     return header_text, str, footer_text
+
+async def update_EPGP(client, message):
+    s = message.content.split()
+    dict = json.loads(s)
+    roster = dict['roster']
+
+    write_EPGP(roster)
+
 
 #TODO: my god we need to make this method more elegant
 def get_roster_strings():

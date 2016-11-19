@@ -18,6 +18,7 @@ from commands import get_character as getchar
 from commands import showhelp
 from commands import get_logs_page
 from commands import get_logs_links
+from commands import update_EPGP
 
 # constants
 MIDDLE_FINGER_GORILLA_URL = "http://3.bp.blogspot.com/-s3eobLzuVm0/Twxkz6yOe_I/AAAAAAAACHg/wxDw-nWa_eU/s1600/Funny+Gorilla5.jpg"
@@ -90,6 +91,8 @@ async def on_message(message): # placeholder "bookmarks"
         await showhelp(client, message)
     elif message.content.startswith('!epgp'):
         pass # do nothing yet
+    elif message.content.startswith('!epgp export'):
+        await update_EPGP(client message)
     elif message.content.startswith('!bis'):
         pass # do nothing yet
     elif message.content.startswith('!audit') and is_officer(message.author): #officers only (unless maybe people wanna run the audit on themselves?)
