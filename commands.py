@@ -352,7 +352,8 @@ async def print_EPGP_leaderboard(client, message):
 
 async def update_EPGP(client, message):
     s = message.content.split()
-    dict = json.loads(s)
+    print("".join(s[2:]))
+    dict = json.loads("".join(s[2:]))
     roster = dict['roster']
 
     write_EPGP(roster)

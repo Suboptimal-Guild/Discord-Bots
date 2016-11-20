@@ -93,12 +93,12 @@ async def on_message(message): # placeholder "bookmarks"
         await getchar(client, message)
     elif message.content == '!help':
         await showhelp(client, message)
+    elif message.content.startswith('!epgp export') and is_officer(message.author):
+        await update_EPGP(client, message)
     elif message.content.startswith('!epgp leaderboard'):
         await print_EPGP_leaderboard(client, message)
     elif message.content.startswith('!epgp'):
         await print_EPGP(client, message)
-    elif message.content.startswith('!epgp export') and is_officer(message.author):
-        await update_EPGP(client, message)
     elif message.content.startswith('!bis'):
         pass # do nothing yet
     elif message.content.startswith('!audit') and is_officer(message.author): #officers only (unless maybe people wanna run the audit on themselves?)

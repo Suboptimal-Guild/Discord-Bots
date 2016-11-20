@@ -164,7 +164,7 @@ def write_EPGP(a):
     # Sort by EP/GP ratio.
     a.sort(key=lambda x: (x[1] / x[2]), reverse=True)
 
-    rangeName = 'RawCopy!A2:H'
+    rangeName = 'Raw!A2:H'
     result = service.spreadsheets().values().get(
     spreadsheetId=ROSTER_SHEET, range=rangeName).execute()
     values = result.get('values', [])
@@ -175,7 +175,7 @@ def write_EPGP(a):
     vals = []
 
     for player in a:
-        name = player[0]
+        name = player[0][:player[0].index('-')]
         player_class = spec = ""
         EP = player[1]
         GP = player[2]
