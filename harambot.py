@@ -5,7 +5,6 @@ import asyncio
 import csv
 from random import randint
 
-
 #TODO: ensure proper controls when calling commands, i.e. only certain ranks can invoke certain commands
 
 from commands import print_roster as pr
@@ -34,6 +33,9 @@ LAUGHING_GORILLA_URL6 = "https://pbs.twimg.com/media/CIWeyDEUwAAs_AO.jpg"
 LOVE_GORILLA_URL = "https://arigorillatrekking.files.wordpress.com/2014/02/gorilal-love.jpg"
 THUMBS_UP_GORILLA = "http://gorillaloveproject.org/files/files/gorilla.jpg"
 NO_PROBLEM_GORILLA = "http://www.animalsbase.com/wp-content/uploads/2015/10/Powerful-Gorilla-Lifts-Fist-Looks-At-Photographer.jpg"
+
+HARAMBOT_DEV = "MjQ5NTkwMTE3MzU2Nzk3OTUz.CxIg5A.BYYtQ1H4H3l4CuLl-YrWjI50eOk"
+HARAMBOT_PRODUCTION = "MjQ2MTMxMjkyMjg5MjM2OTky.CxIzbg.ftm3bhYcnsceIm2bgLQDlx7UmOk"
 
 HARAMBOT = "Harambot 🍌"
 
@@ -91,12 +93,12 @@ async def on_message(message): # placeholder "bookmarks"
         await getchar(client, message)
     elif message.content == '!help':
         await showhelp(client, message)
-    elif message.content.startswith('!epgp'):
-        await print_EPGP
     elif message.content.startswith('!epgp leaderboard'):
-        await print_EPGP_leaderboard
+        await print_EPGP_leaderboard(client, message)
+    elif message.content.startswith('!epgp'):
+        await print_EPGP(client, message)
     elif message.content.startswith('!epgp export') and is_officer(message.author):
-        await update_EPGP(client message)
+        await update_EPGP(client, message)
     elif message.content.startswith('!bis'):
         pass # do nothing yet
     elif message.content.startswith('!audit') and is_officer(message.author): #officers only (unless maybe people wanna run the audit on themselves?)
@@ -189,4 +191,12 @@ JOKE_ANSWERS = ["Furious George.",
 
 client.accept_invite('https://discord.gg/NyYKejv')
 
-client.run('MjQ2MTMxMjkyMjg5MjM2OTky.CwWLNA.Un3vOVd-WKZxpQpTHswfd1ozJUk')
+type = input("Please specify which Harambot you would like to run (dev/prod): ")
+
+while type != "dev" and type != "prod":
+    type = input("That was not a valid input. Please specify which Harambot you would like to run (dev/prod): ")
+
+if type == "dev":
+    client.run("MjQ5NTkwMTE3MzU2Nzk3OTUz.CxIg5A.BYYtQ1H4H3l4CuLl-YrWjI50eOk")
+else:
+    client.run('MjQ2MTMxMjkyMjg5MjM2OTky.CwWLNA.Un3vOVd-WKZxpQpTHswfd1ozJUk')

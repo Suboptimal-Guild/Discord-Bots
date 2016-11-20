@@ -10,6 +10,7 @@ import json
 # for some reason, there is a massive stink with this??? i think maybe python 2.7 vs 3.5 conflict... ill keep working in the google_sheets_interface file to get functionality down before linking it up
 from sheets import get_main_character_name as gmcn
 from sheets import get_roster
+from sheets import get_EPGP
 from sheets import write_EPGP
 
 VALID_KEYWORDS = {"Death Knight": ["Blood", "Frost", "Unholy"],
@@ -197,47 +198,63 @@ def get_help_strings():
     return header_text, str, footer_text
 
 async def print_EPGP(client, message):
-    s = message.content.split()
+    s = message.content.title().split()
+    s = s[1:]
+
+    print(len(s))
 
     output = ""
 
-    if len(s) > 2:
-        await client.send_message(message.channel, ":banana: Sorry, but that is invalid input. Please try again. :banana:")
-        return
-    elif len(s) == 2:
+    if len(s) > 1:
+        a = get_EPGP()
+        b = [["Name", "EP", "GP", "Ratio"]]
+        t = Texttable()
+
+        for row in a:
+            if row[0] in s:
+                b.append([row[0], row[3], row[4], row[5]])
+        if len(b) != len(s) + 1:
+            await client.send_message(message.channel, ":banana: One of the names given was invalid. Please try again. :banana:")
+        t.add_rows(b)
+        output += "EPGP information for **" + " ".join(s) + "**:\n"
+        output += "```"
+        output += t.draw()
+        output += "```"
+    elif len(s) == 1:
         a = get_EPGP()
 
         for row in a:
-            if row[0] == s[1]:
+            if row[0] == s[0]:
                 # Player found.
                 t = Texttable()
                 b = [["Name", "EP", "GP", "Ratio"], [row[0], row[3], row[4], row[5]]]
                 t.add_rows(b)
                 output += "EPGP information for **" + row[0] + "**:\n"
-                output += "'''"
+                output += "```"
                 output += t.draw()
-                output += "'''"
+                output += "```"
                 break
         if output == "":
             # Player wasn't found.
-            await client.send_message(message.channel, ":banana: Sorry, but I couln't find EPGP information for " + s[1] + ".\n\nPlease chack the name and try again.". :banana:")
-
+            await client.send_message(message.channel, ":banana: Sorry, but I couln't find EPGP information for " + s[1] + ".\n\nPlease chack the name and try again. :banana:")
     else:
         a = get_EPGP()
         t = Texttable()
         b = [["Name", "EP", "GP", "Ratio"]]
         for row in a:
             b.append([row[0], row[3], row[4], row[5]])
-            t.add_rows(b)
-            output += "Full EPGP Leaderboard for **Suboptimal**"
-            output += "'''"
-            output += t.draw()
-            output += "'''""
+
+        t.add_rows(b)
+        output += "Full EPGP Leaderboard for **Suboptimal**"
+        output += "```"
+        output += t.draw()
+        output += "```"
 
     await client.send_message(message.channel, output)
 
 async def print_EPGP_leaderboard(client, message):
     s = message.content.lower()
+    s = message.content.split(' ', 1)[1]
     s = message.content.split(' ', 1)[1]
     s = message.content.split(' ', 1)[1]
 
@@ -248,22 +265,23 @@ async def print_EPGP_leaderboard(client, message):
     stats = ["strength", "agility", "intellect"]
     dict = {}
 
-    with open('dclassifications.json') as f:
+    with open('classifications.json') as f:
         dict = json.load(f)
 
     player_class = spec = armor = role = stat = ""
 
     # Look to see if a class was specified.
-    for key in VALID_KEYWORDS.items():
-        index = s.find(key)
+    for key in sorted(VALID_KEYWORDS.keys()):
+        print(str(key).lower() + ", " + s)
+        index = s.find(str(key).lower())
         if index > -1:
-            player_class = key
+            player_class = str(key)
             s.replace(key, '')
             break
 
     # If a class was specified, look for a spec.
     if player_class != "":
-        for key in dict[player_class].items():
+        for key, value in dict[player_class].items():
             index = s.find(key)
             if index > -1:
                 spec = key
@@ -290,21 +308,22 @@ async def print_EPGP_leaderboard(client, message):
     for key in stats:
         index = s.find(key)
         if index > -1:
-            role = key
+            stat = key
             s.replace(key, '')
             break
 
     # Filter results.
-    for row in a:
+    c = []
+    for row in a[:]:
         if player_class != "" and row[1] != player_class:
             a.remove(row)
         elif spec != "" and row[2] != spec:
             a.remove(row)
-        elif armor != "" and dict[row[1]][row[2]]["Armor Type"][0] != armor[0]:
+        elif armor != "" and dict[row[1]][row[2]]["Armor Type"][0].lower() != armor[0]:
             a.remove(row)
-        elif role != "" and dict[row[1]][row[2]]["Role"][0] != role[0]:
+        elif role != "" and dict[row[1]][row[2]]["Role"][0].lower() != role[0]:
             a.remove(row)
-        elif stat != "" and dict[row[1]][row[2]]["Stat"][0] != stat[0]:
+        elif stat != "" and dict[row[1]][row[2]]["Main Stat"][0].lower() != stat[0]:
             a.remove(row)
 
     # Make the string look pretty.
@@ -325,9 +344,9 @@ async def print_EPGP_leaderboard(client, message):
     for row in a:
         b.append([row[0], row[3], row[4], row[5]])
     t.add_rows(b)
-    output += "'''"
+    output += "```"
     output += t.draw()
-    output += "'''"
+    output += "```"
 
     await client.send_message(message.channel, output)
 
