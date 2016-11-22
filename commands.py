@@ -13,19 +13,6 @@ from sheets import get_roster
 from sheets import get_EPGP
 from sheets import write_EPGP
 
-VALID_KEYWORDS = {"Death Knight": ["Blood", "Frost", "Unholy"],
-               "Demon Hunter": ["Havoc", "Vengeance"],
-               "Druid": ["Balance", "Feral", "Guardian", "Restoration"],
-               "Hunter": ["Beast Mastery", "Marksmanship", "Survival"],
-               "Mage": ["Arcane", "Fire", "Frost"],
-               "Monk": ["Brewmaster", "Mistweaver", "Windwalker"],
-               "Paladin": ["Holy", "Protection", "Retribution"],
-               "Priest": ["Discipline", "Holy", "Shadow"],
-               "Rogue": ["Assassination", "Outlaw", "Subtlety"],
-               "Shaman": ["Elemental", "Enhancement", "Restoration"],
-               "Warlock": ["Affliction", "Demonology", "Destruction"],
-               "Warrior": ["Arms", "Fury", "Protection"]}
-
 async def showhelp(client, message):
     # prints out all commands that Harambot currently knows
     header, mainstring, footer = get_help_strings()
@@ -182,7 +169,9 @@ def get_help_strings():
                 ["!roster status <name>", "Prints out current raid roster."],
                 ["!whoami", "Prints out your Discord info."],
                 ["!whois <discord_name>", "Prints out the Discord info of a user."],
-                #["!epgp",""],
+                ["!epgp", "Prints the entire EPGP leaderboard."],
+                ["!epgp leaderboard <params>", "Prints EPGP leaderboard for the parameters specified."],
+                ["!epgp export <export string>", "Uses the export string taken from EPGP (dkp reloaded) to update the EPGP spreadsheet."]
                 #["!bis",""],
                 #["!audit",""],
                 ["mention the word \"joke\"", "I will tell you a joke."],
@@ -271,7 +260,7 @@ async def print_EPGP_leaderboard(client, message):
     player_class = spec = armor = role = stat = ""
 
     # Look to see if a class was specified.
-    for key in sorted(VALID_KEYWORDS.keys()):
+    for key in sorted(dict.keys()):
         print(str(key).lower() + ", " + s)
         index = s.find(str(key).lower())
         if index > -1:
@@ -364,10 +353,7 @@ async def update_EPGP(client, message):
 def get_roster_strings():
     roster = get_roster()
 
-    tanks = []
-    healers = []
-    melee = []
-    ranged = []
+    tanks = healers = melee = ranged = []
 
     header_string = ":banana: Roster for Suboptimal *(" + str(len(roster)) + " members total)* :banana:"
     tank_string = ranged_string = melee_string = healer_string = ""
@@ -384,6 +370,7 @@ def get_roster_strings():
         else:
             healers.append(newplayer)
 
+    # Sort each group by Rank and then by name. The ranks sort alphabetically right now though.
     melee.sort(key=lambda tup: (tup[3], tup[0]))
     ranged.sort(key=lambda tup: (tup[3], tup[0]))
     tanks.sort(key=lambda tup: (tup[3], tup[0]))
@@ -395,13 +382,11 @@ def get_roster_strings():
 
     for player in tanks:
         names += player[0] + '\n'
-        #roles += player[1] + '\n'
         classes += player[1] + '\n'
         specs += player[2] + '\n'
         ranks += player[3] + '\n'
 
     names = names[:-1]
-    #roles = roles[:-1]
     classes = classes[:-1]
     specs = specs[:-1]
     ranks = ranks[:-1]
@@ -414,17 +399,15 @@ def get_roster_strings():
 
     t = Texttable()
     b = [["Name", "Class", "Spec", "Rank"]]
-    names = roles = classes = specs = ranks = ""
+    names = classes = specs = ranks = ""
 
     for player in melee:
         names += player[0] + '\n'
-        #roles += player[1] + '\n'
         classes += player[1] + '\n'
         specs += player[2] + '\n'
         ranks += player[3] + '\n'
 
     names = names[:-1]
-    #roles = roles[:-1]
     classes = classes[:-1]
     specs = specs[:-1]
     ranks = ranks[:-1]
@@ -437,17 +420,15 @@ def get_roster_strings():
 
     t = Texttable()
     b = [["Name", "Class", "Spec", "Rank"]]
-    names = roles = classes = specs = ranks = ""
+    names = classes = specs = ranks = ""
 
     for player in ranged:
         names += player[0] + '\n'
-        #roles += player[1] + '\n'
         classes += player[1] + '\n'
         specs += player[2] + '\n'
         ranks += player[3] + '\n'
 
     names = names[:-1]
-    #roles = roles[:-1]
     classes = classes[:-1]
     specs = specs[:-1]
     ranks = ranks[:-1]
@@ -460,17 +441,15 @@ def get_roster_strings():
 
     t = Texttable()
     b = [["Name", "Class", "Spec", "Rank"]]
-    names = roles = classes = specs = ranks = ""
+    names = classes = specs = ranks = ""
 
     for player in healers:
         names += player[0] + '\n'
-        #roles += player[1] + '\n'
         classes += player[1] + '\n'
         specs += player[2] + '\n'
         ranks += player[3] + '\n'
 
     names = names[:-1]
-    #roles = roles[:-1]
     classes = classes[:-1]
     specs = specs[:-1]
     ranks = ranks[:-1]
