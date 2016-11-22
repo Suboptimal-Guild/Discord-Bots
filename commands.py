@@ -348,10 +348,57 @@ async def update_EPGP(client, message):
     write_EPGP(roster)
     await client.send_message(message.channel, "EPGP is now updated!")
 
-
-#TODO: my god we need to make this method more elegant
 def get_roster_strings():
     roster = get_roster()
+
+    # Players are sorted by guild rank and then by name.
+    # TODO: Make a custom comparator to actually sort rank by rank hierarchy.
+    roster.sort(key=lambda tup: (tup[3], tup[0]))
+
+    header_string = ":banana: Roster for Suboptimal *(" + str(len(roster)) + " members total)* :banana:"
+
+    tank_table = melee_table = ranged_table = healer_table = [["Name", "Class", "Spec", "Rank"]]
+
+    for player in roster:
+        if player[1] == "T":
+            tank_table.append([player[0], player[2], player[3], player[4]])
+        elif player[1] == "M":
+            melee_table.append([player[0], player[2], player[3], player[4]])
+        elif player[1] == "R":
+            ranged_table.append([player[0], player[2], player[3], player[4]])
+        elif player[1] == "H":
+            healer_table.append([player[0], player[2], player[3], player[4]])
+
+    # Add tanks to our output.
+    t = Texttable()
+    t.add_rows(tank_table)
+    tank_string = "**TANKS**\n```"
+    tank_string += t.draw()
+    tank_string += "```"
+
+    # Add melee to our output.
+    t = Texttable()
+    t.add_rows(melee_table)
+    melee_string = "**MELEE**\n```"
+    melee_string += t.draw()
+    melee_string += "```"
+
+    # Add ranged to our output.
+    t = Texttable()
+    t.add_rows(ranged_table)
+    ranged_string = "**RANGED**\n```"
+    ranged_string += t.draw()
+    ranged_string += "```"
+
+    # Add healers to our output.
+    t = Texttable()
+    t.add_rows(healer_table)
+    healer_string = "**HEALERS**\n```"
+    healer_string += t.draw()
+    healer_string += "```"
+
+    return header_string, tank_string, melee_string, ranged_string, healer_string
+    '''
 
     tanks = healers = melee = ranged = []
 
@@ -360,7 +407,7 @@ def get_roster_strings():
 
     # we know based on the method defined in sheets.py that player[1] is the letter that indicates role
     for player in roster:
-        newplayer = [player[0],player[2],player[3],player[4]]
+        newplayer = [player[0],player[1],player[2],player[3],player[4]]
         if player[1] == "T":
             tanks.append(newplayer)
         elif player[1] == "M":
@@ -461,3 +508,4 @@ def get_roster_strings():
     healer_string += "```"
 
     return header_string, tank_string, melee_string, ranged_string, healer_string
+    '''

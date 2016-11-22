@@ -189,14 +189,18 @@ JOKE_ANSWERS = ["Furious George.",
 "Through the ape vine.",
 "A chimp off the old block."]
 
-client.accept_invite('https://discord.gg/NyYKejv')
+def main():
+    client.accept_invite('https://discord.gg/NyYKejv')
 
-type = input("Please specify which Harambot you would like to run (dev/prod): ")
+    type = input("Please specify which Harambot you would like to run (dev/prod): ")
 
-while type != "dev" and type != "prod":
-    type = input("That was not a valid input. Please specify which Harambot you would like to run (dev/prod): ")
+    while type != "dev" and type != "prod":
+        type = input("That was not a valid input. Please specify which Harambot you would like to run (dev/prod): ")
 
-if type == "dev":
-    client.run("MjQ5NTkwMTE3MzU2Nzk3OTUz.CxIg5A.BYYtQ1H4H3l4CuLl-YrWjI50eOk")
-else:
-    client.run('MjQ2MTMxMjkyMjg5MjM2OTky.CwWLNA.Un3vOVd-WKZxpQpTHswfd1ozJUk')
+    if type == "dev":
+        client.run("MjQ5NTkwMTE3MzU2Nzk3OTUz.CxIg5A.BYYtQ1H4H3l4CuLl-YrWjI50eOk")
+    else:
+        client.run('MjQ2MTMxMjkyMjg5MjM2OTky.CwWLNA.Un3vOVd-WKZxpQpTHswfd1ozJUk')
+
+if __name__ == "__main__":
+    main()
