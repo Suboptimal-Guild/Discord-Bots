@@ -132,7 +132,7 @@ def add_character(discordname, charname, classname, role):
     service = discovery.build('sheets', 'v4', http=http,
                               discoveryServiceUrl=DISCOVERY_URL)
 
-    rangeName = 'A1:D' # We're adding a line of 4 cells.
+    rangeName = 'Raw!A1:D' # We're adding a line of 4 cells.
     # Append Discord Name, Character Name, Class, and Role
     values = {'values':[[discordname, charname, classname, role],]}
     # Execute dat shieet

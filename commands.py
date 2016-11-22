@@ -34,6 +34,10 @@ async def add_to_roster(client, message):
     # format: !roster add <name> <role> <class> <spec> <rank>
     s = message.content.split()
 
+
+
+    '''
+
     with open('roster.csv', 'a') as csvfile:
         writer = csv.writer(csvfile, delimiter=',', quotechar='|', quoting = csv.QUOTE_MINIMAL)
         if (len(s) == 7):
@@ -46,6 +50,8 @@ async def add_to_roster(client, message):
 
     new_roster_string = get_roster_string()
     await client.send_message(message.channel, new_roster_string)
+
+    '''
 
 async def remove_from_roster(client,message):
     # format: !roster remove <name>
@@ -353,11 +359,14 @@ def get_roster_strings():
 
     # Players are sorted by guild rank and then by name.
     # TODO: Make a custom comparator to actually sort rank by rank hierarchy.
-    roster.sort(key=lambda tup: (tup[3], tup[0]))
+    roster.sort(key=lambda tup: (-len(tup[4]), tup[4], tup[0]))
 
     header_string = ":banana: Roster for Suboptimal *(" + str(len(roster)) + " members total)* :banana:"
 
-    tank_table = melee_table = ranged_table = healer_table = [["Name", "Class", "Spec", "Rank"]]
+    tank_table = [["Name", "Class", "Spec", "Rank"]]
+    melee_table = [["Name", "Class", "Spec", "Rank"]]
+    ranged_table = [["Name", "Class", "Spec", "Rank"]]
+    healer_table = [["Name", "Class", "Spec", "Rank"]]
 
     for player in roster:
         if player[1] == "T":
@@ -398,114 +407,3 @@ def get_roster_strings():
     healer_string += "```"
 
     return header_string, tank_string, melee_string, ranged_string, healer_string
-    '''
-
-    tanks = healers = melee = ranged = []
-
-    header_string = ":banana: Roster for Suboptimal *(" + str(len(roster)) + " members total)* :banana:"
-    tank_string = ranged_string = melee_string = healer_string = ""
-
-    # we know based on the method defined in sheets.py that player[1] is the letter that indicates role
-    for player in roster:
-        newplayer = [player[0],player[1],player[2],player[3],player[4]]
-        if player[1] == "T":
-            tanks.append(newplayer)
-        elif player[1] == "M":
-            melee.append(newplayer)
-        elif player[1] == "R":
-            ranged.append(newplayer)
-        else:
-            healers.append(newplayer)
-
-    # Sort each group by Rank and then by name. The ranks sort alphabetically right now though.
-    melee.sort(key=lambda tup: (tup[3], tup[0]))
-    ranged.sort(key=lambda tup: (tup[3], tup[0]))
-    tanks.sort(key=lambda tup: (tup[3], tup[0]))
-    healers.sort(key=lambda tup: (tup[3], tup[0]))
-
-    t = Texttable()
-    b = [["Name", "Class", "Spec", "Rank"]]
-    names = roles = classes = specs = ranks = ""
-
-    for player in tanks:
-        names += player[0] + '\n'
-        classes += player[1] + '\n'
-        specs += player[2] + '\n'
-        ranks += player[3] + '\n'
-
-    names = names[:-1]
-    classes = classes[:-1]
-    specs = specs[:-1]
-    ranks = ranks[:-1]
-
-    b.append([names, classes, specs, ranks])
-    t.add_rows(b)
-    tank_string += "**TANKS**\n```"
-    tank_string += t.draw()
-    tank_string += "```"
-
-    t = Texttable()
-    b = [["Name", "Class", "Spec", "Rank"]]
-    names = classes = specs = ranks = ""
-
-    for player in melee:
-        names += player[0] + '\n'
-        classes += player[1] + '\n'
-        specs += player[2] + '\n'
-        ranks += player[3] + '\n'
-
-    names = names[:-1]
-    classes = classes[:-1]
-    specs = specs[:-1]
-    ranks = ranks[:-1]
-
-    b.append([names, classes, specs, ranks])
-    t.add_rows(b)
-    melee_string += "**MELEE DPS**\n```"
-    melee_string += t.draw()
-    melee_string += "```"
-
-    t = Texttable()
-    b = [["Name", "Class", "Spec", "Rank"]]
-    names = classes = specs = ranks = ""
-
-    for player in ranged:
-        names += player[0] + '\n'
-        classes += player[1] + '\n'
-        specs += player[2] + '\n'
-        ranks += player[3] + '\n'
-
-    names = names[:-1]
-    classes = classes[:-1]
-    specs = specs[:-1]
-    ranks = ranks[:-1]
-
-    b.append([names, classes, specs, ranks])
-    t.add_rows(b)
-    ranged_string += "**RANGED DPS**\n```"
-    ranged_string += t.draw()
-    ranged_string += "```"
-
-    t = Texttable()
-    b = [["Name", "Class", "Spec", "Rank"]]
-    names = classes = specs = ranks = ""
-
-    for player in healers:
-        names += player[0] + '\n'
-        classes += player[1] + '\n'
-        specs += player[2] + '\n'
-        ranks += player[3] + '\n'
-
-    names = names[:-1]
-    classes = classes[:-1]
-    specs = specs[:-1]
-    ranks = ranks[:-1]
-
-    b.append([names, classes, specs, ranks])
-    t.add_rows(b)
-    healer_string += "**HEALERS**\n```"
-    healer_string += t.draw()
-    healer_string += "```"
-
-    return header_string, tank_string, melee_string, ranged_string, healer_string
-    '''
