@@ -177,7 +177,7 @@ def get_help_strings():
                 ["!whois <discord_name>", "Prints out the Discord info of a user."],
                 ["!epgp", "Prints the entire EPGP leaderboard."],
                 ["!epgp leaderboard <params>", "Prints EPGP leaderboard for the parameters specified."],
-                ["!epgp export <export string>", "Uses the export string taken from EPGP (dkp reloaded) to update the EPGP spreadsheet."]
+                ["!epgp export <export string>", "Update the EPGP spreadsheet!."]
                 #["!bis",""],
                 #["!audit",""],
                 ["mention the word \"joke\"", "I will tell you a joke."],
@@ -355,10 +355,24 @@ async def update_EPGP(client, message):
     await client.send_message(message.channel, "EPGP is now updated!")
 
 def get_roster_strings():
-    roster = get_roster()
+    roster_dict = {}
+
+    with open('guild_roster.json', 'r') as f:
+        roster_dict = json.load(f)
+    f.close()
+
+    roster = []
+
+    classifications = {}
+
+    with open('classifications.json', 'r') as f:
+        classifications = json.load(f)
+    f.close()
+
+    for k, v in roster_dict.items():
+        roster.append((k, classifications[v["class"]][v["spec"]]["Role"], v["class"], v["spec"], v["rank"]))
 
     # Players are sorted by guild rank and then by name.
-    # TODO: Make a custom comparator to actually sort rank by rank hierarchy.
     roster.sort(key=lambda tup: (-len(tup[4]), tup[4], tup[0]))
 
     header_string = ":banana: Roster for Suboptimal *(" + str(len(roster)) + " members total)* :banana:"

@@ -38,6 +38,7 @@ HARAMBOT_DEV = "MjQ5NTkwMTE3MzU2Nzk3OTUz.CxIg5A.BYYtQ1H4H3l4CuLl-YrWjI50eOk"
 HARAMBOT_PRODUCTION = "MjQ2MTMxMjkyMjg5MjM2OTky.CxIzbg.ftm3bhYcnsceIm2bgLQDlx7UmOk"
 
 HARAMBOT = "Harambot 🍌"
+HARAMBOT_DEV = "Harambot-Dev"
 
 LAUGHING_GORILLAS = [LAUGHING_GORILLA_URL, LAUGHING_GORILLA_URL2, LAUGHING_GORILLA_URL3, LAUGHING_GORILLA_URL4, LAUGHING_GORILLA_URL5, LAUGHING_GORILLA_URL6]
 
@@ -73,7 +74,7 @@ async def on_ready():
 @client.event
 async def on_message(message): # placeholder "bookmarks"
     # also we want to post messages in the channe lwhere the user asked, but if possible make the message only viewable to them kinda like the default bot can do
-    if message.author.name == HARAMBOT:
+    if message.author.name == HARAMBOT or message.author.name == HARAMBOT_DEV:
         pass
     elif message.content.startswith('!test'):
         await client.send_message(message.channel, 'I\'m a fuckboy.')
