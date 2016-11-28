@@ -236,8 +236,12 @@ async def print_EPGP(client, message):
         a = get_EPGP()
         t = Texttable()
         b = [["Name", "EP", "GP", "Ratio"]]
-        for row in a:
+        for row in a[:len(a) // 2]:
             b.append([row[0], row[3], row[4], row[5]])
+
+        c = [["Name", "EP", "GP", "Ratio"]]
+        for row in a[len(a) // 2:]:
+            c.append([row[0], row[3], row[4], row[5]])
 
         t.add_rows(b)
         output += "Full EPGP Leaderboard for **Suboptimal**"
@@ -245,7 +249,16 @@ async def print_EPGP(client, message):
         output += t.draw()
         output += "```"
 
-    await client.send_message(message.channel, output)
+        await client.send_message(message.channel, output)
+
+        t = Texttable()
+        t.add_rows(c)
+        output = "```"
+        output += t.draw()
+        output += "```"
+
+        await client.send_message(message.channel, output)
+
 
 async def print_EPGP_leaderboard(client, message):
     s = message.content.lower()
@@ -355,22 +368,7 @@ async def update_EPGP(client, message):
     await client.send_message(message.channel, "EPGP is now updated!")
 
 def get_roster_strings():
-    roster_dict = {}
-
-    with open('guild_roster.json', 'r') as f:
-        roster_dict = json.load(f)
-    f.close()
-
-    roster = []
-
-    classifications = {}
-
-    with open('classifications.json', 'r') as f:
-        classifications = json.load(f)
-    f.close()
-
-    for k, v in roster_dict.items():
-        roster.append((k, classifications[v["class"]][v["spec"]]["Role"], v["class"], v["spec"], v["rank"]))
+    roster = get_roster()
 
     # Players are sorted by guild rank and then by name.
     roster.sort(key=lambda tup: (-len(tup[4]), tup[4], tup[0]))

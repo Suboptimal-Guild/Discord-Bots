@@ -64,22 +64,17 @@ def get_roster():
     service = discovery.build('sheets', 'v4', http=http,
                               discoveryServiceUrl=DISCOVERY_URL)
 
-    rangeName = 'Raw!A2:H'
+    rangeName = 'Roster!A2:E'
     result = service.spreadsheets().values().get(
     spreadsheetId=ROSTER_SHEET, range=rangeName).execute()
     values = result.get('values', [])
-
-    print(len(values))
 
     if not values:
         print('No data found in sheet.')
     else:
         a = []
         for row in values:
-            print(len(row))
-            if row[2] == "1":
-                #print("Appending row {0}".format(row))
-                a.append((row[1], row[3], row[4], row[5], row[7]))
+            a.append((row[0], row[1], row[2], row[3], row[4]))
         return a
 
 def get_main_character_name(discord_name):
