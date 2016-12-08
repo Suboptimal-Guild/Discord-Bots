@@ -64,7 +64,7 @@ def get_roster():
     service = discovery.build('sheets', 'v4', http=http,
                               discoveryServiceUrl=DISCOVERY_URL)
 
-    rangeName = 'Roster!A2:E'
+    rangeName = 'Roster!G3:K'
     result = service.spreadsheets().values().get(
     spreadsheetId=ROSTER_SHEET, range=rangeName).execute()
     values = result.get('values', [])
@@ -159,7 +159,7 @@ def write_EPGP(a):
     # Sort by EP/GP ratio.
     a.sort(key=lambda x: (x[1] / x[2]), reverse=True)
 
-    rangeName = 'Raw!A2:H'
+    rangeName = 'Roster!A3:E'
     result = service.spreadsheets().values().get(
     spreadsheetId=ROSTER_SHEET, range=rangeName).execute()
     values = result.get('values', [])
@@ -176,10 +176,10 @@ def write_EPGP(a):
         GP = player[2]
 
         for row in values:
-            if row[1] == name:
+            if row[0] == name:
                 # Match found
-                player_class = row[4]
-                spec = row[5]
+                player_class = row[2]
+                spec = row[3]
         if player_class == "":
             player_class = "Class"
             spec = "Spec"

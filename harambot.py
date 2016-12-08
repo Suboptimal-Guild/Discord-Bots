@@ -142,7 +142,7 @@ def is_message_a_thank_you(message):
         return False
 
 def is_officer(member):
-    return is_member_of_role(member, "Officers") or is_member_of_role(member, "Starlord")
+    return is_member_of_role(member, "Officers") or is_member_of_role(member, "Starlord") or is_member_of_role(member, "admin")
 
 def is_member_of_role(member, role_name):
     for role in member.roles:

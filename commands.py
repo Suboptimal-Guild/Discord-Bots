@@ -370,52 +370,27 @@ async def update_EPGP(client, message):
 def get_roster_strings():
     roster = get_roster()
 
-    # Players are sorted by guild rank and then by name.
-    roster.sort(key=lambda tup: (-len(tup[4]), tup[4], tup[0]))
-
     header_string = ":banana: Roster for Suboptimal *(" + str(len(roster)) + " members total)* :banana:"
 
-    tank_table = [["Name", "Class", "Spec", "Rank"]]
-    melee_table = [["Name", "Class", "Spec", "Rank"]]
-    ranged_table = [["Name", "Class", "Spec", "Rank"]]
-    healer_table = [["Name", "Class", "Spec", "Rank"]]
+    table_dict = {}
+
+    table_dict['T'] = [["Name", "Class", "Spec", "Rank"]]
+    table_dict['M'] = [["Name", "Class", "Spec", "Rank"]]
+    table_dict['R'] = [["Name", "Class", "Spec", "Rank"]]
+    table_dict['H'] = [["Name", "Class", "Spec", "Rank"]]
 
     for player in roster:
-        if player[1] == "T":
-            tank_table.append([player[0], player[2], player[3], player[4]])
-        elif player[1] == "M":
-            melee_table.append([player[0], player[2], player[3], player[4]])
-        elif player[1] == "R":
-            ranged_table.append([player[0], player[2], player[3], player[4]])
-        elif player[1] == "H":
-            healer_table.append([player[0], player[2], player[3], player[4]])
+        table_dict[player[1]].append([player[0], player[2], player[3], player[4]])
 
-    # Add tanks to our output.
-    t = Texttable()
-    t.add_rows(tank_table)
-    tank_string = "**TANKS**\n```"
-    tank_string += t.draw()
-    tank_string += "```"
+    # Helper function so we repeat ourselves less.
+    def get_roster_print(header, rows):
+        t = Texttable()
+        t.add_rows(rows)
+        return str(header + '\n```' + t.draw() + "```")
 
-    # Add melee to our output.
-    t = Texttable()
-    t.add_rows(melee_table)
-    melee_string = "**MELEE**\n```"
-    melee_string += t.draw()
-    melee_string += "```"
-
-    # Add ranged to our output.
-    t = Texttable()
-    t.add_rows(ranged_table)
-    ranged_string = "**RANGED**\n```"
-    ranged_string += t.draw()
-    ranged_string += "```"
-
-    # Add healers to our output.
-    t = Texttable()
-    t.add_rows(healer_table)
-    healer_string = "**HEALERS**\n```"
-    healer_string += t.draw()
-    healer_string += "```"
+    tank_string = get_roster_print('**TANKS**', table_dict['T']) # Add tanks to our output.
+    melee_string = get_roster_print('**MELEE**', table_dict['M']) # Add melee to our output.
+    ranged_string = get_roster_print('**RANGED**', table_dict['R']) # Add ranged to our output.
+    healer_string = get_roster_print('**HEALERS**', table_dict['H']) # Add healers to our output.
 
     return header_string, tank_string, melee_string, ranged_string, healer_string
