@@ -20,6 +20,7 @@ from commands import get_logs_links
 from commands import update_EPGP
 from commands import print_EPGP
 from commands import print_EPGP_leaderboard
+from commands import generate_post_out
 
 # constants
 MIDDLE_FINGER_GORILLA_URL = "http://3.bp.blogspot.com/-s3eobLzuVm0/Twxkz6yOe_I/AAAAAAAACHg/wxDw-nWa_eU/s1600/Funny+Gorilla5.jpg"
@@ -109,6 +110,9 @@ async def on_message(message): # placeholder "bookmarks"
     elif message.content.startswith('!logspage'):
         # DOES NOT WORK, see above TODO
         await get_logs_page(client, message)
+    # Post out stuff
+    elif message.content.startswith('!postout'):
+        await generate_post_out(client, message)
     # fun stuff
     elif "banana" in message.content.lower():
         await client.send_message(message.channel, SHOCKED_MONKEY_URL + "\n... I love bananas. + 100 EP")

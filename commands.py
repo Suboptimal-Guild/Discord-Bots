@@ -4,6 +4,7 @@ import discord
 import asyncio
 import csv
 import json
+import datetime
 
 #TODO: modularize code more and split into multiple files, im exhausted as fuck so just cramming it in here for now, it works though
 
@@ -12,13 +13,15 @@ from sheets import get_main_character_name as gmcn
 from sheets import get_roster
 from sheets import get_EPGP
 from sheets import write_EPGP
+from googcal import create_post_out
 
 async def showhelp(client, message):
     # prints out all commands that Harambot currently knows
-    header, mainstring, footer = get_help_strings()
+    header, str1, str2, footer = get_help_strings()
 
     await client.send_message(message.channel, header)
-    await client.send_message(message.channel, mainstring)
+    await client.send_message(message.channel, str1)
+    await client.send_message(message.channel, str2)
     await client.send_message(message.channel, footer)
 
 async def print_roster(client, message):
@@ -33,25 +36,6 @@ async def print_roster(client, message):
 async def add_to_roster(client, message):
     # format: !roster add <name> <role> <class> <spec> <rank>
     s = message.content.split()
-
-
-
-    '''
-
-    with open('roster.csv', 'a') as csvfile:
-        writer = csv.writer(csvfile, delimiter=',', quotechar='|', quoting = csv.QUOTE_MINIMAL)
-        if (len(s) == 7):
-            writer.writerow([s[2], s[3], s[4], s[5], s[6]])
-        elif len(s) == 8:
-            writer.writerow([s[2], s[3], (s[4] + " " + s[5]), s[6], s[7]])
-
-
-    await client.send_message(message.channel, ":banana: Added **" + s[2] + "** to roster! :monkey_face: :banana:")
-
-    new_roster_string = get_roster_string()
-    await client.send_message(message.channel, new_roster_string)
-
-    '''
 
 async def remove_from_roster(client,message):
     # format: !roster remove <name>
@@ -166,7 +150,6 @@ async def get_character(client, message):
 def get_help_strings():
     header_text = ":banana: Currently I know the following commands: :banana:"
     t = Texttable()
-
     t.add_rows([["Command", "Description"],
                 ["!armory <character_name> <server> (if not from ED)", "Generates an armory link for the given character."],
                 #["!chars <discord_name>", "Generates a list of the discord user's World of Warcraft characters."],
@@ -174,10 +157,21 @@ def get_help_strings():
                 ["!roster remove <name>", "Removes from the raid roster."],
                 ["!roster status <name>", "Prints out current raid roster."],
                 ["!whoami", "Prints out your Discord info."],
-                ["!whois <discord_name>", "Prints out the Discord info of a user."],
+                ["!whois <discord_name>", "Prints out the Discord info of a user."]
+                ])
+
+    str1 = "```"
+    str1 += t.draw()
+    str1 += "```"
+
+    t = Texttable()
+    t.add_rows([["Command", "Description"],
                 ["!epgp", "Prints the entire EPGP leaderboard."],
                 ["!epgp leaderboard <params>", "Prints EPGP leaderboard for the parameters specified."],
-                ["!epgp export <export string>", "Update the EPGP spreadsheet!."]
+                ["!epgp export <export string>", "Update the EPGP spreadsheet!."],
+                ["!postout <startdate> <starttime> <enddate> <endtime>", "Create a calendar event to post out for a given time period.\n" +
+                                                                         "Date Format: (mm/dd/yy)\n" +
+                                                                         "Time Format: (hh:mm{AM/PM}) OR use (hh:mm) in military time"],
                 #["!bis",""],
                 #["!audit",""],
                 ["mention the word \"joke\"", "I will tell you a joke."],
@@ -185,12 +179,12 @@ def get_help_strings():
                 #["!logspage <character name> <server> (if not from ED)", "Generates the URL for a player's page on WarcraftLogs."]
                 ])
 
-    str = "```"
-    str += t.draw()
-    str += "```"
+    str2 = "```"
+    str2 += t.draw()
+    str2 += "```"
 
     footer_text = "\n:monkey_face: I'm a work in progress with more commands coming each and every day- if you have any suggestions forward them to my overlords Mortivius and Ian! :monkey_face:"
-    return header_text, str, footer_text
+    return header_text, str1, str2, footer_text
 
 async def print_EPGP(client, message):
     s = message.content.title().split()
@@ -366,6 +360,43 @@ async def update_EPGP(client, message):
 
     write_EPGP(roster)
     await client.send_message(message.channel, "EPGP is now updated!")
+
+
+
+async def generate_post_out(client, message):
+    s = message.content.split()
+
+    def generate_date_time(date, time):
+        # Generate start datetime
+        date = date.split('/') # Split the date into month, day, and year
+        time = time.split(':') # Split the time into hour and minutes
+
+        # Add the leading numbers to the year if they put in two numbers for the year.
+        if len(date[2]) == 2:
+            date[2] = "20" + date[2]
+
+        if int(time[0]) > 12 or int(time[0]) == 0: # If they put in military time.
+            time[0] = int(time[0])
+        elif time[0] == '12' and time[1][-2:] == "PM": # Midnight in military time is 0:00
+            time[0] = 0
+        elif time[1][-2:] == "PM": # Convert a PM time to military time.
+            time[0] = int(time[0]) + 12
+        else: # Otherwise just use the given hour.
+            time[0] = int(time[0])
+
+        # Generate the datetime date and time.
+        date = datetime.date(int(date[2]), int(date[0]), int(date[1]))
+        time = datetime.time(time[0], int(time[1][:2]))
+
+        # Combine the date and time and format it into a proper string.
+        return datetime.datetime.combine(date, time).isoformat()
+
+    # Generate start and end datetime
+    startdate = generate_date_time(s[1], s[2])
+    enddate = generate_date_time(s[3], s[4])
+
+    create_post_out("Ripparian", str(startdate), str(enddate))
+    await client.send_message(message.channel, ":banana: Post out has been added to the calendar! :banana:")
 
 def get_roster_strings():
     roster = get_roster()
