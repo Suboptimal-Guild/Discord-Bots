@@ -21,6 +21,7 @@ from commands import update_EPGP
 from commands import print_EPGP
 from commands import print_EPGP_leaderboard
 from commands import generate_post_out
+from commands import print_attendance
 
 # constants
 MIDDLE_FINGER_GORILLA_URL = "http://3.bp.blogspot.com/-s3eobLzuVm0/Twxkz6yOe_I/AAAAAAAACHg/wxDw-nWa_eU/s1600/Funny+Gorilla5.jpg"
@@ -111,7 +112,9 @@ async def on_message(message): # placeholder "bookmarks"
         # DOES NOT WORK, see above TODO
         await get_logs_page(client, message)
     # Post out stuff
-    elif message.content.startswith('!postout'):
+    elif message.content.startswith('!attendance'):
+        await print_attendance(client, message)
+    elif message.content.startswith('!postout') or message.content.startswith('!late') or message.content.startswith('!absent'):
         await generate_post_out(client, message)
     # fun stuff
     elif "banana" in message.content.lower():

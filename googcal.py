@@ -6,6 +6,8 @@ from apiclient import discovery
 from oauth2client import client
 from oauth2client import tools
 from oauth2client.file import Storage
+from enum import Enum
+from time import strftime
 
 import datetime
 
@@ -20,6 +22,9 @@ except ImportError:
 SCOPES = 'https://www.googleapis.com/auth/calendar'
 CLIENT_SECRET_FILE = 'client_secret.json'
 APPLICATION_NAME = 'Google Calendar API Python Quickstart'
+
+# Enums
+#AbsenceType = Enum('AbsenceType', 'late absent eloa')
 
 
 def get_credentials():
@@ -50,16 +55,32 @@ def get_credentials():
         print('Storing credentials to ' + credential_path)
     return credentials
 
-def create_post_out(name, starttime, endtime):
+def create_post_out(name, starttime, endtime, type):
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('calendar', 'v3', http=http)
 
+    typedesc = ""
+    description = ""
+
+    if type == 'late':
+        typedesc = "Late"
+        description = "will be late tonight."
+    elif type == 'absent':
+        typedesc = "Absent"
+        description = "will be absent tonight."
+    elif type == 'eloa':
+        typedesc = "Extended Leave of Absence"
+        description = "will be absent for this time period."
+
+    print(typedesc)
+    print(description)
+
     # body
     event = {
-        'summary': '{0} Absent'.format(name),
+        'summary': '{0} '.format(name) + typedesc,
         'location': 'Raid',
-        'description': '{0} has posted out of raid for this time period.'.format(name),
+        'description': '{0} '.format(name) + description,
         'start': {
             'dateTime': starttime,
             'timeZone': 'America/New_York',
@@ -81,21 +102,7 @@ def create_post_out(name, starttime, endtime):
         calendarId='9gspv11m882ke0jt24rdkpudss@group.calendar.google.com', sendNotifications=True,
         supportsAttachments=True, maxAttendees=1, body=event).execute()
 
-def list_cals():
-    credentials = get_credentials()
-    http = credentials.authorize(httplib2.Http())
-    service = discovery.build('calendar', 'v3', http=http)
-
-    page_token = None
-    while True:
-        calendar_list = service.calendarList().list(pageToken=page_token).execute()
-        for calendar_list_entry in calendar_list['items']:
-            print(calendar_list_entry['summary'])
-        page_token = calendar_list.get('nextPageToken')
-        if not page_token:
-            break
-
-def main():
+def get_post_outs():
     """Shows basic usage of the Google Calendar API.
 
     Creates a Google Calendar API service object and outputs a list of the next
@@ -108,7 +115,7 @@ def main():
     now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
     print('Getting the upcoming 10 events')
     eventsResult = service.events().list(
-        calendarId='primary', timeMin=now, maxResults=10, singleEvents=True,
+        calendarId='9gspv11m882ke0jt24rdkpudss@group.calendar.google.com', timeMin=now, maxResults=10, singleEvents=True,
         orderBy='startTime').execute()
     events = eventsResult.get('items', [])
 
@@ -116,10 +123,13 @@ def main():
         print('No upcoming events found.')
     for event in events:
         start = event['start'].get('dateTime', event['start'].get('date'))
-        print(start, event['summary'])
+        end = event['end'].get('dateTime', event['end'].get('date'))
+        print(datetime.datetime.strptime(start[:-6], "%Y-%m-%dT%H:%M:%S").strftime('%a, %b %d, %Y %I:%M %p'), datetime.datetime.strptime(start[:-6], "%Y-%m-%dT%H:%M:%S").strftime('%a, %b %d, %Y %I:%M %p'), event['summary'])
+
+    return events
 
 
 if __name__ == '__main__':
-    #main()
-    create_post_out("Ripparian", "2016-12-28T09:00:00-07:00", "2016-12-28T17:00:00-07:00")
+    #get_post_outs()
+    create_post_out("Ripparian", "2016-12-28T09:00:00", "2016-12-29T00:00:00", "late")
     #list_cals()
