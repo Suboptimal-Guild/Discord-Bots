@@ -158,7 +158,10 @@ def get_help_strings():
                 ["!roster remove <name>", "Removes from the raid roster."],
                 ["!roster status <name>", "Prints out current raid roster."],
                 ["!whoami", "Prints out your Discord info."],
-                ["!whois <discord_name>", "Prints out the Discord info of a user."]
+                ["!whois <discord_name>", "Prints out the Discord info of a user."],
+                ["!epgp", "Prints the entire EPGP leaderboard."],
+                ["!epgp leaderboard <params>", "Prints EPGP leaderboard for the parameters specified."],
+                ["!epgp export <export string>", "Update the EPGP spreadsheet."]
                 ])
 
     str1 = "```"
@@ -167,12 +170,13 @@ def get_help_strings():
 
     t = Texttable()
     t.add_rows([["Command", "Description"],
-                ["!epgp", "Prints the entire EPGP leaderboard."],
-                ["!epgp leaderboard <params>", "Prints EPGP leaderboard for the parameters specified."],
-                ["!epgp export <export string>", "Update the EPGP spreadsheet!."],
                 ["!postout <startdate> <starttime> <enddate> <endtime>", "Create a calendar event to post out for a given time period.\n" +
                                                                          "Date Format: (mm/dd/yy)\n" +
                                                                          "Time Format: (hh:mm{AM/PM}) OR use (hh:mm) in military time"],
+                ["!late <date>", "Create a calendar event to specify that you will be late on a given night\n" +
+                                 "Date Format: (mm/dd/yy)"],
+                ["!absent <date>", "Create a calendar event to specify that you will be absent on a given night\n" +
+                                 "Date Format: (mm/dd/yy)"],
                 #["!bis",""],
                 #["!audit",""],
                 ["mention the word \"joke\"", "I will tell you a joke."],
@@ -418,32 +422,72 @@ async def generate_post_out(client, message):
         # Combine the date and time and format it into a proper string.
         return datetime.datetime.combine(date, time).isoformat()
 
+    async def generate_single_raid_dates(date):
+        if int(date[2]) > 2000:
+            try:
+                startdate = datetime.datetime.combine(datetime.date(int(date[2]), int(date[0]), int(date[1])), datetime.time(21, 0))
+                enddate = startdate + datetime.timedelta(hours=3)
+            except ValueError:
+                await client.send_message(message.channel, ":banana: Sorry, I could not create a post out with the given information :banana:")
+                return
+            startdate = startdate.isoformat()
+            enddate = enddate.isoformat()
+        elif int(date[2]) < 100:
+            try:
+                startdate = datetime.datetime.combine(datetime.date(2000 + int(date[2]), int(date[0]), int(date[1])), datetime.time(21, 0))
+                enddate = startdate + datetime.timedelta(hours=3)
+            except ValueError:
+                await client.send_message(message.channel, ":banana: Sorry, I could not create a post out with the given information :banana:")
+                return
+            startdate = startdate.isoformat()
+            enddate = enddate.isoformat()
+        else:
+            await client.send_message(message.channel, ":banana: Sorry, I could not create a post out with the given information :banana:")
+            return
+
     # Generate start and end datetime
     if s[0] == "!postout":
-        startdate = generate_date_time(s[1], s[2])
-        enddate = generate_date_time(s[3], s[4])
+        try:
+            startdate = generate_date_time(s[1], s[2])
+            enddate = generate_date_time(s[3], s[4])
+        except ValueError:
+            await client.send_message(message.channel, ":banana: Sorry, I could not create a post out with the given information :banana:")
+            return
         type = "eloa"
     elif s[0] == "!absent":
         date = s[1].split('/')
-        startdate = datetime.datetime.combine(datetime.date(int(date[2]), int(date[0]), int(date[1])), datetime.time(21, 0))
-        enddate = startdate + datetime.timedelta(hours=3)
+        try:
+            startdate = datetime.datetime.combine(datetime.date(int(date[2]), int(date[0]), int(date[1])), datetime.time(21, 0))
+            enddate = startdate + datetime.timedelta(hours=3)
+        except ValueError:
+            await client.send_message(message.channel, ":banana: Sorry, I could not create a post out with the given information :banana:")
+            return
         startdate = startdate.isoformat()
         enddate = enddate.isoformat()
         type = "absent"
     elif s[0] == "!late":
         date = s[1].split('/')
-        startdate = datetime.datetime.combine(datetime.date(int(date[2]), int(date[0]), int(date[1])), datetime.time(21, 0))
-        enddate = startdate + datetime.timedelta(hours=3)
+        try:
+            startdate = datetime.datetime.combine(datetime.date(int(date[2]), int(date[0]), int(date[1])), datetime.time(21, 0))
+            enddate = startdate + datetime.timedelta(hours=3)
+        except:
+            await client.send_message(message.channel, ":banana: Sorry, I could not create a post out with the given information :banana:")
+            return
         startdate = startdate.isoformat()
         enddate = enddate.isoformat()
         type = "late"
 
     if message.author.nick == None:
-        create_post_out(message.author.name, str(startdate), str(enddate), type)
+        if create_post_out(message.author.name, str(startdate), str(enddate), type):
+            await client.send_message(message.channel, ":banana: Post out has been added to the calendar! :banana:")
+        else:
+            await client.send_message(message.channel, ":banana: Sorry, I could not create a post out with the given information :banana:")
     else:
-        create_post_out(message.author.nick, str(startdate), str(enddate), type)
+        if create_post_out(message.author.nick, str(startdate), str(enddate), type):
+            await client.send_message(message.channel, ":banana: Post out has been added to the calendar! :banana:")
+        else:
+            await client.send_message(message.channel, ":banana: Sorry, I could not create a post out with the given information :banana:")
 
-    await client.send_message(message.channel, ":banana: Post out has been added to the calendar! :banana:")
 
 def get_roster_strings():
     roster = get_roster()

@@ -102,6 +102,8 @@ def create_post_out(name, starttime, endtime, type):
         calendarId='9gspv11m882ke0jt24rdkpudss@group.calendar.google.com', sendNotifications=True,
         supportsAttachments=True, maxAttendees=1, body=event).execute()
 
+    return True
+
 def get_post_outs():
     """Shows basic usage of the Google Calendar API.
 
