@@ -54,7 +54,6 @@ client = discord.Client()
 #TODO: raid announcements 30 min prior to raid time starting
 #TODO: drag everyone into raid channel when raid starts
 #TODO: some type of alts command
-#TODO: epgp commands
 #TODO: log pages for people since WL uses generated IDs unlike armory which uses character/realmname
 #TODO: audit (maybe full audit for officers, individual audit of themselves for everyone?)
 #TODO: bis command of some sort?
@@ -62,7 +61,6 @@ client = discord.Client()
 #TODO: tagging by Harambot in a message??
 #TODO: see todo over in commands for get_roster_string- dat shit ugly do
 #TODO: add offspecs to roster status command
-#TODO: roster add/delete
 #TODO: addons/WA
 #TODO: surveys with reactions
 
@@ -117,6 +115,8 @@ async def on_message(message): # placeholder "bookmarks"
     elif message.content.startswith('!postout') or message.content.startswith('!late') or message.content.startswith('!absent'):
         await generate_post_out(client, message)
     # fun stuff
+    elif message.content.lower().startswith('!chuckquote'):
+        await print_chuck_quote(client, message)
     elif "banana" in message.content.lower():
         await client.send_message(message.channel, SHOCKED_MONKEY_URL + "\n... I love bananas. + 100 EP")
     elif "joke" in message.content.lower():
@@ -179,23 +179,33 @@ async def tell_joke(client, message):
     else:
         await client.send_message(message.channel, ":banana: Correct! + 50 EP, " + message.author.name + " :banana:\n\n" + THUMBS_UP_GORILLA)
 
+async def print_chuck_quote(client, message):
+    rand = randint(0, len(CHUCK_QUOTES) - 1)
+    await client.send_message(message.channel, CHUCK_QUOTES[rand]) # Print a random chuck quote.
+
 JOKE_QUESTIONS = ["What do you call an angry monkey?",
-"What do you call a monkey that sells potato chips?",
-"Where do monkeys go to drink?",
-"Why do monkeys like bananas?",
-"Where should a monkey go when he loses his tail?",
-"Why should you never fight with a monkey?",
-"Where do chimps get their gossip?",
-"What do you call a baby monkey?"]
+                  "What do you call a monkey that sells potato chips?",
+                  "Where do monkeys go to drink?",
+                  "Why do monkeys like bananas?",
+                  "Where should a monkey go when he loses his tail?",
+                  "Why should you never fight with a monkey?",
+                  "Where do chimps get their gossip?",
+                  "What do you call a baby monkey?"]
 
 JOKE_ANSWERS = ["Furious George.",
-"A chipmunk.",
-"The monkey bars.",
-"Because they have appeal.",
-"To a retailer!",
-"They use gorilla warfare.",
-"Through the ape vine.",
-"A chimp off the old block."]
+                "A chipmunk.",
+                "The monkey bars.",
+                "Because they have appeal.",
+                "To a retailer!",
+                "They use gorilla warfare.",
+                "Through the ape vine.",
+                "A chimp off the old block."]
+
+CHUCK_QUOTES = ["\"How fun is it to get sloppy blackout drunk and chase after ratchets!\" -Chuck 2016",
+                "\"Do you ever drink milk before you go to sleep man? That shit gives you crazy ass dreams.\" -Chuck 2016",
+                "\"Dude, Ian, you just need to get over it.\" -Chuck 2016, after Ian tells him he doesn't like to get blackout drunk anymore.",
+                "\"HEAL ME!\" -Chuck every single raid",
+                "\"Can you link the logs?\" -Chuck every 5 seconds"]
 
 def main():
     client.accept_invite('https://discord.gg/NyYKejv')
