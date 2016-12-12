@@ -217,7 +217,7 @@ CHUCK_QUOTES = ["\"How fun is it to get sloppy blackout drunk and chase after ra
                 "\"Is this fight longer than 8 minutes?\" -Chuck 2016",
                 "\"Transmog mount?\" -Chuck 2016",
                 "\"Dude, that's gnar!\" -Chuck 2016"]
-PETER_QUOTES = ["\"I wonder how big that kid's dick is\""]
+PETER_QUOTES = ["\"I wonder how big that kid's dick is.\" -Peter 2016"]
 
 def main():
     client.accept_invite('https://discord.gg/NyYKejv')
