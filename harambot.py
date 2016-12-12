@@ -205,7 +205,12 @@ CHUCK_QUOTES = ["\"How fun is it to get sloppy blackout drunk and chase after ra
                 "\"Do you ever drink milk before you go to sleep man? That shit gives you crazy ass dreams.\" -Chuck 2016",
                 "\"Dude, Ian, you just need to get over it.\" -Chuck 2016, after Ian tells him he doesn't like to get blackout drunk anymore.",
                 "\"HEAL ME!\" -Chuck every single raid",
-                "\"Can you link the logs?\" -Chuck every 5 seconds"]
+                "\"Can you link the logs?\" -Chuck every 5 seconds",
+                "\"Can you wait two minutes? I popped a potion.\" -Chuck 2016",
+                "\"Dude wtf?\" -Chuck 2016",
+                "\"Is this fight longer than 8 minutes?\" -Chuck 2016",
+                "\"Transmog mount?\" -Chuck 2016",
+                "\"Dude, that's gnar!\" -Chuck 2016"]
 
 def main():
     client.accept_invite('https://discord.gg/NyYKejv')
