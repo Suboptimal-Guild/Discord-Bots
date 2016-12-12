@@ -116,7 +116,9 @@ async def on_message(message): # placeholder "bookmarks"
         await generate_post_out(client, message)
     # fun stuff
     elif message.content.lower().startswith('!chuckquote'):
-        await print_chuck_quote(client, message)
+        await print_quote(client, message, "chuck")
+    elif message.content.lower().startswith('!peterquote'):
+        await print_quote(client, message, "peter")
     elif "banana" in message.content.lower():
         await client.send_message(message.channel, SHOCKED_MONKEY_URL + "\n... I love bananas. + 100 EP")
     elif "joke" in message.content.lower():
@@ -179,9 +181,13 @@ async def tell_joke(client, message):
     else:
         await client.send_message(message.channel, ":banana: Correct! + 50 EP, " + message.author.name + " :banana:\n\n" + THUMBS_UP_GORILLA)
 
-async def print_chuck_quote(client, message):
-    rand = randint(0, len(CHUCK_QUOTES) - 1)
-    await client.send_message(message.channel, CHUCK_QUOTES[rand]) # Print a random chuck quote.
+async def print_quote(client, message, name):
+    if name == "chuck":
+        rand = randint(0, len(CHUCK_QUOTES) - 1)
+        await client.send_message(message.channel, CHUCK_QUOTES[rand]) # Print a random chuck quote.
+    elif name == "peter":
+        rand = randint(0, len(PETER_QUOTES) - 1)
+        await client.send_message(message.channel, PETER_QUOTES[rand]) # Print a random chuck quote.
 
 JOKE_QUESTIONS = ["What do you call an angry monkey?",
                   "What do you call a monkey that sells potato chips?",
@@ -204,13 +210,14 @@ JOKE_ANSWERS = ["Furious George.",
 CHUCK_QUOTES = ["\"How fun is it to get sloppy blackout drunk and chase after ratchets!\" -Chuck 2016",
                 "\"Do you ever drink milk before you go to sleep man? That shit gives you crazy ass dreams.\" -Chuck 2016",
                 "\"Dude, Ian, you just need to get over it.\" -Chuck 2016, after Ian tells him he doesn't like to get blackout drunk anymore.",
-                "\"HEAL ME!\" -Chuck every single raid",
+                "\"Big heals on Chuck.\" -Chuck every single raid",
                 "\"Can you link the logs?\" -Chuck every 5 seconds",
                 "\"Can you wait two minutes? I popped a potion.\" -Chuck 2016",
                 "\"Dude wtf?\" -Chuck 2016",
                 "\"Is this fight longer than 8 minutes?\" -Chuck 2016",
                 "\"Transmog mount?\" -Chuck 2016",
                 "\"Dude, that's gnar!\" -Chuck 2016"]
+PETER_QUOTES = ["\"I wonder how big that kid's dick is\""]
 
 def main():
     client.accept_invite('https://discord.gg/NyYKejv')
