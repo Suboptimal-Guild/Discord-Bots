@@ -117,7 +117,7 @@ async def on_message(message): # placeholder "bookmarks"
     # fun stuff
     elif message.content.lower().startswith('!chuckquote'):
         await print_quote(client, message, "chuck")
-    elif message.content.lower().startswith('!peterquote'):
+    elif message.content.lower().startswith('!peterquote') or message.content.lower().startswith('!petequote'):
         await print_quote(client, message, "peter")
     elif "banana" in message.content.lower():
         await client.send_message(message.channel, SHOCKED_MONKEY_URL + "\n... I love bananas. + 100 EP")
