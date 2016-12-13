@@ -17,8 +17,8 @@ from commands.commands import get_char_name as gcn
 from commands.commands import get_own_name as gon
 from commands.commands import get_character as getchar
 from commands.commands import showhelp
-from commands.commands import get_logs_page
-from commands.commands import get_logs_links
+from commands.logs import get_logs_page
+from commands.logs import get_logs_links
 from commands.post_outs import generate_post_out
 from commands.post_outs import print_attendance
 
@@ -28,9 +28,6 @@ from fun.response import *
 
 HARAMBOT_DEV = "MjQ5NTkwMTE3MzU2Nzk3OTUz.CxIg5A.BYYtQ1H4H3l4CuLl-YrWjI50eOk"
 HARAMBOT_PRODUCTION = "MjQ2MTMxMjkyMjg5MjM2OTky.CxIzbg.ftm3bhYcnsceIm2bgLQDlx7UmOk"
-
-HARAMBOT = "Harambot 🍌"
-HARAMBOT_DEV = "Harambot-Dev"
 
 # sheets interface
 #from google_sheets_interface import get_main_character_name as gmcn

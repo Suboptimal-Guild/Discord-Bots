@@ -2,9 +2,11 @@ from texttable import Texttable
 
 import discord
 import asyncio
+import json
 
 # imported functions
 from google.sheets import get_EPGP
+from google.sheets import write_EPGP
 
 async def update_EPGP(client, message):
     s = message.content.split()

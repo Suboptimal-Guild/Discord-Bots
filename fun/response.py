@@ -33,6 +33,9 @@ JOKE_ANSWERS = ["Furious George.",
                 "Through the ape vine.",
                 "A chimp off the old block."]
 
+HARAMBOT = "Harambot 🍌"
+HARAMBOT_DEV = "Harambot-Dev"
+
 def is_message_a_greeting(message):
     msg = message.content.lower()
     if "hi" in msg or "hello" in msg or "hey" in msg or "sup " in msg or "whats up" in msg or "yo " in msg or "what's up" in msg:

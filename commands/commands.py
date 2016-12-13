@@ -81,18 +81,6 @@ async def get_armory_link(client, message):
         link = "http://us.battle.net/wow/en/character/" + s[2].lower() + "-" + s[3].lower() + "/" + s[1].title() + "/advanced"
         await client.send_message(message.channel, ":banana: Armory link for **" + str(s[1]) + "**: " + link + " :banana:")
 
-async def get_logs_page(client, message):
-    s = message.content.split()
-    pass
-
-async def get_logs_links(client, message):
-    peter_logs_url = "https://www.warcraftlogs.com/guilds/usercalendar/256766"
-    ian_logs_url = "https://www.warcraftlogs.com/guilds/usercalendar/5415"
-    tyhler_logs_url = "https://www.warcraftlogs.com/guilds/201686"
-
-    s = "Peter's logs: " + peter_logs_url + "\nIan's logs: " + ian_logs_url + "\nTyhler's logs: " + tyhler_logs_url
-    await client.send_message(message.channel, ":banana: " + s + " :banana:")
-
 async def get_char_name(client, message):
     msg = message.content.split()
 
