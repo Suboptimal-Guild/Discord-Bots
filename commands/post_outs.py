@@ -101,14 +101,12 @@ async def generate_post_out(client, message):
 
     if message.author.nick == None:
         try:
-            create_post_out(message.author.name, str(startdate), str(enddate), type)
             await client.send_message(message.channel, ":banana: Post out has been added to the calendar! :banana:")
             await client.send_message(message.channel, create_post_out(message.author.name, str(startdate), str(enddate), type))
         except ValueError:
             await client.send_message(message.channel, ":banana: Sorry, I could not create a post out with the given information :banana:")
     else:
         try:
-            create_post_out(message.author.nick, str(startdate), str(enddate), type)
             await client.send_message(message.channel, ":banana: Post out has been added to the calendar! :banana:")
             await client.send_message(message.channel, create_post_out(message.author.name, str(startdate), str(enddate), type))
         except ValueError:
