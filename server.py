@@ -1,5 +1,8 @@
-from os import environ
-from flask import Flask
+import flask
+import harambot
+app = flask.Flask(__name__)
 
-app = Flask(__name__)
-app.run(environ.get('PORT'))
+@app.route("/")
+def index():
+    #do whatevr here...
+    harambot.main()

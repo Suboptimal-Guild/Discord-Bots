@@ -1,1 +1,1 @@
-myworker: python harambot.py
+web: gunicorn server:app --log-file -
