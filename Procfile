@@ -1,2 +1,1 @@
-worker: python harambot.py
-worker: dev
+myworker: python harambot.py
