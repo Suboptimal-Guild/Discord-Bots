@@ -1,1 +1,2 @@
-web: gunicorn main_app:app
+web: python server.py
+web: python harambot.py
