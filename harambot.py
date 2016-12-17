@@ -29,6 +29,9 @@ from fun.response import *
 HARAMBOT_DEV = "MjQ5NTkwMTE3MzU2Nzk3OTUz.CxIg5A.BYYtQ1H4H3l4CuLl-YrWjI50eOk"
 HARAMBOT_PRODUCTION = "MjQ2MTMxMjkyMjg5MjM2OTky.CxIzbg.ftm3bhYcnsceIm2bgLQDlx7UmOk"
 
+HARAMBOT = "Harambot 🍌"
+HARAMBOT_DEV = "Harambot-Dev"
+
 # sheets interface
 #from google_sheets_interface import get_main_character_name as gmcn
 
