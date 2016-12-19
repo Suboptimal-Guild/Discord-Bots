@@ -1,2 +1,2 @@
-web: python server.py
-web: python harambot.py
+web: gunicorn wsgi
+web: python3 harambot.py
