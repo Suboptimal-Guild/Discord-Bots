@@ -87,3 +87,6 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# Stuff that needs to be kept confidential
+.credentials/
