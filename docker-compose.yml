@@ -1,0 +1,24 @@
+attendance-bot:
+  build: ./Attendance-Bot/.
+  container_name: attendance-bot
+  command: python3 run.py --dev
+
+epgp-bot:
+  build: ./EPGP-Bot/.
+  container_name: epgp-bot
+  command: python3 run.py --dev
+
+fun-bot:
+  build: ./Fun-Bot/.
+  container_name: fun-bot
+  command: python3 run.py --dev
+
+misc-bot:
+  build: ./Misc-Bot/.
+  container_name: misc-bot
+  command: python3 run.py --dev
+
+roster-bot:
+  build: ./Roster-Bot/.
+  container_name: roster-bot
+  command: python3 run.py --dev

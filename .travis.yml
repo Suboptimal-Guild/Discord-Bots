@@ -1,0 +1,14 @@
+sudo: required
+language: python
+python:
+  - "3.5"
+services:
+  - docker
+install:
+  - docker-compose up
+script:
+  - docker ps | grep attendance-bot
+  - docker ps | grep epgp-bot
+  - docker ps | grep fun-bot
+  - docker ps | grep misc-bot
+  - docker ps | grep roster-bot
