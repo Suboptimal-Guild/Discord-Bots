@@ -1,0 +1,15 @@
+[submodule "Attendance-Bot"]
+	path = Attendance-Bot
+	url = https://github.com/Suboptimal-Guild/Attendance-Bot
+[submodule "EPGP-Bot"]
+	path = EPGP-Bot
+	url = https://github.com/Suboptimal-Guild/EPGP-Bot
+[submodule "Fun-Bot"]
+	path = Fun-Bot
+	url = https://github.com/Suboptimal-Guild/Fun-Bot
+[submodule "Misc-Bot"]
+	path = Misc-Bot
+	url = https://github.com/Suboptimal-Guild/Misc-Bot
+[submodule "Roster-Bot"]
+	path = Roster-Bot
+	url = https://github.com/Suboptimal-Guild/Roster-Bot
