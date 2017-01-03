@@ -2,8 +2,9 @@
 
 import discord
 import asyncio
-import csv
-from random import randint
+
+# Grab the tokens
+from tokens import HARAMBOT_DEV_TOKEN, HARAMBOT_PRODUCTION_TOKEN
 
 #TODO: ensure proper controls when calling commands, i.e. only certain ranks can invoke certain commands
 
@@ -25,9 +26,6 @@ from commands.post_outs import print_attendance
 # Fun imports
 from fun.quote import print_quote
 from fun.response import *
-
-HARAMBOT_DEV = "MjQ5NTkwMTE3MzU2Nzk3OTUz.CxIg5A.BYYtQ1H4H3l4CuLl-YrWjI50eOk"
-HARAMBOT_PRODUCTION = "MjQ2MTMxMjkyMjg5MjM2OTky.CxIzbg.ftm3bhYcnsceIm2bgLQDlx7UmOk"
 
 HARAMBOT = "Harambot 🍌"
 HARAMBOT_DEV = "Harambot-Dev"
@@ -138,9 +136,9 @@ def main():
         type = input("That was not a valid input. Please specify which Harambot you would like to run (dev/prod): ")
 
     if type == "dev":
-        client.run("MjQ5NTkwMTE3MzU2Nzk3OTUz.CxIg5A.BYYtQ1H4H3l4CuLl-YrWjI50eOk")
+        client.run(HARAMBOT_DEV_TOKEN)
     else:
-        client.run('MjQ2MTMxMjkyMjg5MjM2OTky.CwWLNA.Un3vOVd-WKZxpQpTHswfd1ozJUk')
+        client.run(HARAMBOT_PRODUCTION_TOKEN)
 
 if __name__ == "__main__":
     main()
