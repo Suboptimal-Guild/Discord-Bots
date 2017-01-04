@@ -2,9 +2,7 @@
 
 import discord
 import asyncio
-
-# Grab the tokens
-from tokens import HARAMBOT_DEV_TOKEN, HARAMBOT_PRODUCTION_TOKEN
+import os
 
 #TODO: ensure proper controls when calling commands, i.e. only certain ranks can invoke certain commands
 
@@ -136,9 +134,9 @@ def main():
         type = input("That was not a valid input. Please specify which Harambot you would like to run (dev/prod): ")
 
     if type == "dev":
-        client.run(HARAMBOT_DEV_TOKEN)
+        client.run(os.environ['FUN_BOT_DEVELOPMENT_TOKEN'])
     else:
-        client.run(HARAMBOT_PRODUCTION_TOKEN)
+        client.run(os.environ['FUN_BOT_PRODUCTION_TOKEN'])
 
 if __name__ == "__main__":
     main()
