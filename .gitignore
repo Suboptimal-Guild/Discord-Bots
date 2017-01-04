@@ -90,4 +90,3 @@ ENV/
 
 # Stuff that needs to be kept confidential
 .credentials/
-tokens.py
