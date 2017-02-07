@@ -1,0 +1,15 @@
+sudo: required
+language: python
+python:
+  - "3.5"
+services:
+  - docker
+install:
+  - env=dev docker-compose build
+  - env=dev docker-compose up -d
+script:
+  - docker ps | grep attendance-bot
+  - docker ps | grep epgp-bot
+  - docker ps | grep fun-bot
+  - docker ps | grep misc-bot
+  - docker ps | grep roster-bot
