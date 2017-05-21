@@ -1,0 +1,16 @@
+sudo: required
+language: python
+python:
+  - '3.5'
+services:
+  - docker
+install:
+  - docker pull jfloff/alpine-python:latest-slim
+  - docker build -t attendance-bot .
+  - docker run -td -e ATTENDANCE_BOT_DEVELOPMENT_TOKEN -e ATTENDANCE_BOT_PRODUCTION_TOKEN attendance-bot python3 run.py --dev
+script:
+  - docker ps | grep attendance-bot
+env:
+  global:
+    - secure: C9tLA2Y2P26BFFP5fWbuPuGt7E13OdvDD5GI5g0n4G867scQbLIqlaBg4PzxejbOk3Qul/wGpcXQR+IMk4RTR4pKEqfB84Kggc3ffu1IdXFrs8Tz8M72XTUlzfgBy1DrcqdxtZAPw/z+buHTy6jc7nFRHgzbFZwaeVDsVuJmNXrXQXletZCG5QwM3h2SOW9moa/8v3PRebdBsaj49hyiOYU2brnWsRjbdVvbCvGhmuh0lkFQRwP+9O84R1xk9pptWn94sllQRKUBkQU7miHJTBdlAM30Xc2DIYHHb8EnwnwQzZpNKovtwYkVOJNsaRSAOTpZ1y/oJzk4v+bcT1bJEkadbuSK61G1CEtIuwZtejow39RuQTDlD39iZ4XWZ8U+c+1NKkDd0BzkIn44LCsDzbbV7Jh9VIQQa8IFWWLgugfiVGIZxHRxCcNUerL3djoXBL2mhKaXyZHInw+cPI56QGMg59v2I5LRGWIsSiamRJ/VFOLacZpfZ1XfvHlgwUTVdQiXgeXiDV++t8n2CymIEQJsJTNT+vtxeeMRVs1al/6uvVjF58XwhS0sSiY1KK8YnPQw8Pwx+HzLSe0/5/vhEIaWhZH6mO5F9SyPFr+yEsip8rzyL/G5Zzg/wxVd45JnxXsEmtIMIgIbLdgrZd1BZxzFwFADA7w3nI8akoJzLSU=
+    - secure: Ug/Rmxc+NFbjcJqYPD1QLM23v4c1Fu1MVSR0lbZ7nzQiVFN3TwGb5kBesPOb5opOQRBT3FapVgO8SK4GxeXzekXfacmtpMt3dmh6PP/49j/khII+CunbT+VvoAKLj5eT+p47gjenVoS0Rga8cA+FPXLa6QFHZzLF57GP2kAvzyrru2AAdyYMKGcIEm5Fvd8dQNs4a8fFMcN/SWnP/1u0fmNB9F5j0peOjfhexRP6pSj5zjRxQbuRUkTuIocgWFSreR1tyNELNGI7+OW5DAUK3a0ap1MVVQ+1rhQzhoxx/Ri3hwb4qG0zOuMQgpefGiZ1HWTLZ48alz0ZXMfR+n2iUPL9w+us/vv+v5giHl2U+J0YwOWigPBo1zMq7HFpwJ+WVFnMnYW8NIPTX+6/1/K6/IpshBBetwhFlmFbjwY/cxPzSsYSMS0L6ND94itQ97VS+vZyz8OOzfAgZolhMQDyceQnarq2mc9PelZI7ONOb3kel7As1CFb/4+OF/7Qv/bofYmZAfFfhBVwFHLQCU39sjaPq+HbfXuVJJBN5Yl/sgHQc67Ua2IvVIxNZaZ27WDita9ZXRrUxMWSRn5CTjIiMiHnqRJqXyELUbD3TCDNodWciY2QV6NlBkRAZ7UlpN7xYW+GAUvI17hhxWNI0aNVS65Jeywl9X8z1N4H5BPghrY=

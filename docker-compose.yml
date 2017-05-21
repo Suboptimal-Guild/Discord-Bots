@@ -1,39 +1,41 @@
-attendance-bot:
-  build: ./Attendance-Bot/.
-  container_name: attendance-bot
-  command: python3 run.py --${env}
-  environment:
-    - ATTENDANCE_BOT_DEVELOPMENT_TOKEN
-    - ATTENDANCE_BOT_PRODUCTION_TOKEN
+version: "3"
+services:
+    attendance-bot:
+        build: ./Attendance-Bot/.
+        container_name: attendance-bot
+        command: python3 run.py --${env}
+        environment:
+            - ATTENDANCE_BOT_DEVELOPMENT_TOKEN
+            - ATTENDANCE_BOT_PRODUCTION_TOKEN
 
-epgp-bot:
-  build: ./EPGP-Bot/.
-  container_name: epgp-bot
-  command: python3 run.py --${env}
-  environment:
-    - EPGP_BOT_DEVELOPMENT_TOKEN
-    - EPGP_BOT_PRODUCTION_TOKEN
+    epgp-bot:
+        build: ./EPGP-Bot/.
+        container_name: epgp-bot
+        command: python3 run.py --${env}
+        environment:
+            - EPGP_BOT_DEVELOPMENT_TOKEN
+            - EPGP_BOT_PRODUCTION_TOKEN
 
-fun-bot:
-  build: ./Fun-Bot/.
-  container_name: fun-bot
-  command: python3 run.py --${env}
-  environment:
-    - FUN_BOT_DEVELOPMENT_TOKEN
-    - FUN_BOT_PRODUCTION_TOKEN
+    fun-bot:
+        build: ./Fun-Bot/.
+        container_name: fun-bot
+        command: python3 run.py --${env}
+        environment:
+            - FUN_BOT_DEVELOPMENT_TOKEN
+            - FUN_BOT_PRODUCTION_TOKEN
 
-misc-bot:
-  build: ./Misc-Bot/.
-  container_name: misc-bot
-  command: python3 run.py --${env}
-  environment:
-    - MISCELLANEOUS_BOT_DEVELOPMENT_TOKEN
-    - MISCELLANEOUS_BOT_PRODUCTION_TOKEN
+    misc-bot:
+        build: ./Misc-Bot/.
+        container_name: misc-bot
+        command: python3 run.py --${env}
+        environment:
+            - MISCELLANEOUS_BOT_DEVELOPMENT_TOKEN
+            - MISCELLANEOUS_BOT_PRODUCTION_TOKEN
 
-roster-bot:
-  build: ./Roster-Bot/.
-  container_name: roster-bot
-  command: python3 run.py --${env}
-  environment:
-    - ROSTER_BOT_DEVELOPMENT_TOKEN
-    - ROSTER_BOT_PRODUCTION_TOKEN
+    roster-bot:
+        build: ./Roster-Bot/.
+        container_name: roster-bot
+        command: python3 run.py --${env}
+        environment:
+            - ROSTER_BOT_DEVELOPMENT_TOKEN
+            - ROSTER_BOT_PRODUCTION_TOKEN
